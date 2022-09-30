@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { ANIM_TIME } from '../constants'
+import { ANIM_TIME, SUITS } from '../constants'
 
 export default class Card extends Phaser.GameObjects.Sprite {
   suit: number
@@ -18,6 +18,14 @@ export default class Card extends Phaser.GameObjects.Sprite {
 
   create() {
     // const card = this.add.sprite(400, 400, 'cards')
+  }
+
+  toggle() {
+    if (this.frame.name === 'bgblue.png') {
+      this.setFrame(`${this.value + 1}${SUITS[this.suit]}.png`)
+    } else {
+      this.setFrame(`bgblue.png`)
+    }
   }
 
   move(x: number, y: number) {

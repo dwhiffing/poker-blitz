@@ -26,8 +26,24 @@ export default class DeckService {
         this.scene.time.delayedCall(i * ANIM_TIME, () => {
           card.move(target.x + i * 15, target.y)
           card.setDepth(i)
+          card.toggle()
         })
       }
+    }
+  }
+
+  scatter() {
+    for (let i = 0; i < this.cards.length; i++) {
+      const card = this.cards[i]
+      this.scene.time.delayedCall(i * 50, () => {
+        card.move(
+          Phaser.Math.RND.integerInRange(150, 500),
+          Phaser.Math.RND.integerInRange(250, 500),
+        )
+        card.setAngle(Phaser.Math.RND.realInRange(1, 350))
+        card.setDepth(i)
+        card.toggle()
+      })
     }
   }
 }
