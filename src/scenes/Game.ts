@@ -7,6 +7,7 @@ import { handToString, judgeWinner } from '../utils'
 
 // TODO: need to add ai
 // TODO: need to sort/highlight each card based on hand
+// console.log(judgeWinner(['AH AC KS KS 3D', 'AC AS KS KD 4D']))
 
 export default class Game extends Phaser.Scene {
   deck!: DeckService
@@ -21,6 +22,7 @@ export default class Game extends Phaser.Scene {
   timerText!: Phaser.GameObjects.BitmapText
   newGameText!: Phaser.GameObjects.BitmapText
   winnerText!: Phaser.GameObjects.BitmapText
+
   constructor() {
     super('GameScene')
     this.width = 0
@@ -102,6 +104,7 @@ export default class Game extends Phaser.Scene {
     // check winner
     const playerHands = this.player.evaluateHands()
     const aiHands = this.ai.evaluateHands()
+
     const results = playerHands.map((pHand, i) => {
       const aiHand = aiHands[i]
       const hands = [handToString(pHand), handToString(aiHand)]
@@ -110,6 +113,7 @@ export default class Game extends Phaser.Scene {
       this.ai.handLabels[i].setTint(isPlayerWinner ? 0xff1111 : 0x33ff33)
       return isPlayerWinner
     })
+
     const playerWinCount = results.reduce((sum, n) => sum + (n ? 1 : 0), 0)
     const winner = playerWinCount > 2 ? 'player' : 'bob'
 

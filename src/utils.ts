@@ -66,14 +66,14 @@ export const judgeWinner = (players: string[]) => {
   if (handStrengths[0] !== handStrengths[1]) {
     return handStrengths.indexOf(_.min(handStrengths)!)
   }
-  // TODO: handle tie breakers for high cards better
+  // TODO: handle tiebreakers for edge cases
   const tiebreakers = (
     (
       players
         .map(bestHands[handStrengths[0]] as () => void)
         .map((t) => (!Array.isArray(t) ? [t] : t)) as string[][]
     ).map((hand: string[]) => hand.map(getValueIndex) as number[]) as number[][]
-  ).map((h) => h[0])
+  ).map((t) => (t.length === 1 ? t[0] : t))
 
   return tiebreakers.indexOf(_.min(tiebreakers)!)
 }
