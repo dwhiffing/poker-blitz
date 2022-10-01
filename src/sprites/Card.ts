@@ -21,8 +21,8 @@ export default class Card extends Phaser.GameObjects.Sprite {
     // const card = this.add.sprite(400, 400, 'cards')
   }
 
-  toggle() {
-    if (this.frame.name === 'bgblue.png') {
+  toggle(state: boolean = this.frame.name === 'bgblue.png') {
+    if (state) {
       this.setFrame(`${this.value + 1}${SUITS[this.suit]}.png`)
     } else {
       this.setFrame(`bgblue.png`)
