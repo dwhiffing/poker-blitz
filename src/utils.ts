@@ -68,8 +68,24 @@ export const judgeWinner = (players: string[]) => {
   if (handStrengths[0] !== handStrengths[1]) {
     return handStrengths.indexOf(_.min(handStrengths)!)
   }
-  const tiebreakers = players.map(sortCards).map((h) => h.map(getValueIndex))
-  return tiebreakers.indexOf(_.min(tiebreakers)!)
+
+  // see who has higher value hand
+  const tiebreakers = players
+    .map(bestHands[handStrengths[0]] as () => void)
+    .map(getValueIndex)
+  if (
+    tiebreakers[0] !== -1 &&
+    tiebreakers[1] !== -1 &&
+    tiebreakers[0] !== tiebreakers[1]
+  ) {
+    return tiebreakers.indexOf(_.min(tiebreakers)!)
+  }
+
+  // if hands are the same, check remaining cards for kickers
+  const tiebreakerKickers = players
+    .map(sortCards)
+    .map((h) => h.map(getValueIndex))
+  return tiebreakerKickers.indexOf(_.min(tiebreakerKickers)!)
 }
 
 export const handToString = (hand: ICard[]): string =>

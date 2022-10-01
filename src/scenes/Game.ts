@@ -6,6 +6,9 @@ import Card from '../sprites/Card'
 import { handToString, judgeWinner } from '../utils'
 
 // TODO: need to add ai
+// based on difficulty, ai makes a move every n seconds
+// start with random move, then make ai more strategic
+
 // TODO: need to sort/highlight each card based on hand
 
 export default class Game extends Phaser.Scene {
@@ -180,6 +183,7 @@ export default class Game extends Phaser.Scene {
 //     [['AC AD AH AS JS', '2C 3C 4C 5C 6C'], 1], // straightflush beats 4oak
 //     [['2C 3C 4C 5C 6C', 'AC KC QC JC TC'], 1], // royalflush beats straightflush
 
+//     [['2H 2C 3S 5D AD', 'QC QS 4S 6D 7D'], 1], // tiebreaker: pair goes to higher pair
 //     [['AH 2C 4S 6D 8D', 'AC QS 2S 4D 6D'], 1], // tiebreaker: high card goes to high kicker
 //     [['AH KC QS JD 5D', 'AC KS QS JD 6D'], 1], // tiebreaker: high card goes to high kicker
 //     [['AH AC QS 2D 3D', 'AC AS KS 2D 3D'], 1], // tiebreaker: pair goes to high kicker

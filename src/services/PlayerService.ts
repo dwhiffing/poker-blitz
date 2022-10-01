@@ -50,7 +50,7 @@ export default class PlayerService {
       hands.forEach((hand, i) => {
         hand.forEach((card) => card.move(card.x, this.y + 20 + i * 100))
       })
-    }, 1)
+    }, 10)
 
     const descriptions = getHandDescriptions(hands)
     this.handLabels.forEach((label, i) => {
