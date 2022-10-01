@@ -5,6 +5,10 @@ import PlayerService from '../services/PlayerService'
 import Card from '../sprites/Card'
 import { handToString, judgeWinner } from '../utils'
 
+// TODO: need to sort each players hands by strength
+// TODO: need to add ai
+// TODO: need to sort each hand visually based on hand type, then highlight those cards
+
 export default class Game extends Phaser.Scene {
   deck!: DeckService
   player!: PlayerService
@@ -14,6 +18,7 @@ export default class Game extends Phaser.Scene {
   allowInput: boolean
   height: number
   roundTimer: number
+  roundCount!: number
   timerText!: Phaser.GameObjects.BitmapText
   newGameText!: Phaser.GameObjects.BitmapText
   winnerText!: Phaser.GameObjects.BitmapText
@@ -52,22 +57,19 @@ export default class Game extends Phaser.Scene {
   }
 
   async dealCards() {
-    let roundCount = 0
-    while (roundCount <= 4) {
-      if (roundCount > 0) await this.deck.shuffle()
-      await this.deck.deal(5, this.player, roundCount)
-      await this.deck.deal(5, this.ai, roundCount)
-      await this.deck.scatter(roundCount)
-      if (roundCount < 4) {
+    this.roundCount = 0
+    while (this.roundCount <= 4) {
+      if (this.roundCount > 0) await this.deck.shuffle()
+      await this.deck.deal(5, this.player, this.roundCount)
+      await this.deck.deal(5, this.ai, this.roundCount)
+      await this.deck.scatter(this.roundCount)
+      if (this.roundCount < 4) {
         await this.startTimer()
         await this.deck.shuffle()
       }
-      roundCount++
+      this.roundCount++
     }
 
-    // TODO: need to add ai
-    // TODO: need to sort each players hands by strength
-    // TODO: need to sort each hand visually based on hand type, then highlight those cards
     const playerHands = this.player.evaluateHands()
     const aiHands = this.ai.evaluateHands()
     const results = playerHands.map((pHand, i) => {
@@ -118,8 +120,7 @@ export default class Game extends Phaser.Scene {
 
   clickCard(card: Card) {
     // TODO: prevent click if not in deck or one of players cards
-    // TODO: prevent click when game is over
-    if (!this.allowInput) return
+    if (!this.allowInput || this.roundCount > 4) return
     if (this.selectedCard) {
       const aIndex = this.deck.cards.indexOf(card)
       const bIndex = this.deck.cards.indexOf(this.selectedCard)
