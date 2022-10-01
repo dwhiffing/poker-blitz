@@ -31,14 +31,17 @@ export default class Game extends Phaser.Scene {
   }
 
   create() {
-    this.deck = new DeckService(this)
     this.width = this.cameras.main.width
     this.height = this.cameras.main.height
+
+    this.deck = new DeckService(this)
     this.deck.cards.forEach((card) =>
       card.on('pointerdown', () => this.clickCard(card)),
     )
+
     this.player = new PlayerService(this, 50, 50, 'player')
     this.ai = new PlayerService(this, this.width - 120, 50, 'bob')
+
     this.timerText = this.add
       .bitmapText(this.width / 2, 50, 'gem', '')
       .setOrigin(0.5)
@@ -49,14 +52,10 @@ export default class Game extends Phaser.Scene {
       .bitmapText(this.width / 2, this.height - 50, 'gem', '')
       .setOrigin(0.5)
 
-    this.delay(300, this.dealCards.bind(this))
+    this.delay(300, this.playRound.bind(this))
   }
 
-  async delay(duration: number, callback: () => void) {
-    this.time.delayedCall(duration, callback)
-  }
-
-  async dealCards() {
+  async playRound() {
     this.roundCount = 0
     while (this.roundCount <= 4) {
       if (this.roundCount > 0) await this.deck.shuffle()
@@ -64,47 +63,29 @@ export default class Game extends Phaser.Scene {
       await this.deck.deal(5, this.ai, this.roundCount)
       await this.deck.scatter(this.roundCount)
       if (this.roundCount < 4) {
-        await this.startTimer()
+        await this.startRoundTimer()
         await this.deck.shuffle()
       }
       this.roundCount++
     }
-
-    const playerHands = this.player.evaluateHands()
-    const aiHands = this.ai.evaluateHands()
-    const results = playerHands.map((pHand, i) => {
-      const aiHand = aiHands[i]
-      const hands = [handToString(pHand), handToString(aiHand)]
-      const isPlayerWinner = judgeWinner(hands) === 0
-      this.player.handLabels[i].setTint(isPlayerWinner ? 0x33ff33 : 0xff1111)
-      this.ai.handLabels[i].setTint(isPlayerWinner ? 0xff1111 : 0x33ff33)
-      return isPlayerWinner
-    })
-    const playerWinCount = results.reduce((sum, n) => sum + (n ? 1 : 0), 0)
-    const winner = playerWinCount > 2 ? 'player' : 'bob'
-    this.winnerText.text = `${winner} wins!`
-    this.newGameText.text = 'New game?'
-    this.registry.inc(playerWinCount > 2 ? 'player-wins' : 'ai-wins')
-    this.newGameText
-      .setInteractive()
-      .on('pointerdown', () => this.scene.restart())
+    this.handleRoundEnd()
   }
 
-  startTimer() {
+  startRoundTimer() {
     return new Promise<void>((resolve) => {
       this.roundTimer = ROUND_DURATION
       this.timerText.text = this.roundTimer.toString()
       this.allowInput = true
-      this.tickTimer(resolve)
+      this.tickRoundTimer(resolve)
       this.time.addEvent({
         repeat: ROUND_DURATION,
         delay: 1000,
-        callback: () => this.tickTimer(resolve),
+        callback: () => this.tickRoundTimer(resolve),
       })
     })
   }
 
-  tickTimer(callback: () => void) {
+  tickRoundTimer(callback: () => void) {
     if (--this.roundTimer > -1) {
       this.timerText.text = this.roundTimer.toString()
     } else {
@@ -118,33 +99,69 @@ export default class Game extends Phaser.Scene {
     }
   }
 
-  clickCard(card: Card) {
-    // TODO: prevent click if not in deck or one of players cards
-    if (!this.allowInput || this.roundCount > 4) return
-    if (this.selectedCard) {
-      const aIndex = this.deck.cards.indexOf(card)
-      const bIndex = this.deck.cards.indexOf(this.selectedCard)
-      const shouldSwap = aIndex !== -1 ? bIndex === -1 : bIndex !== -1
-      if (shouldSwap) {
-        const a = aIndex > -1 ? card : this.selectedCard
-        const b = aIndex > -1 ? this.selectedCard : card
-        this.deck.cards = this.deck.cards.map((c) => (a === c ? b! : c))
-        this.player.cards = this.player.cards.map((c) => (b === c ? a! : c))
-      }
+  handleRoundEnd() {
+    // check winner
+    const playerHands = this.player.evaluateHands()
+    const aiHands = this.ai.evaluateHands()
+    const results = playerHands.map((pHand, i) => {
+      const aiHand = aiHands[i]
+      const hands = [handToString(pHand), handToString(aiHand)]
+      const isPlayerWinner = judgeWinner(hands) === 0
+      this.player.handLabels[i].setTint(isPlayerWinner ? 0x33ff33 : 0xff1111)
+      this.ai.handLabels[i].setTint(isPlayerWinner ? 0xff1111 : 0x33ff33)
+      return isPlayerWinner
+    })
+    const playerWinCount = results.reduce((sum, n) => sum + (n ? 1 : 0), 0)
+    const winner = playerWinCount > 2 ? 'player' : 'bob'
 
+    // update labels and show replay button
+    this.winnerText.text = `${winner} wins!`
+    this.newGameText.text = 'New game?'
+    this.registry.inc(playerWinCount > 2 ? 'player-wins' : 'ai-wins')
+    this.newGameText
+      .setInteractive()
+      .on('pointerdown', () => this.scene.restart())
+  }
+
+  clickCard(card: Card) {
+    if (
+      !this.allowInput ||
+      this.roundCount > 4 ||
+      this.ai.cards.indexOf(card) > -1
+    )
+      return
+
+    if (this.selectedCard) {
+      this.swapCards(card, this.selectedCard)
       this.selectedCard.clearTint()
-      this.selectedCard.move(card.x, card.y)
-      let depth = card.depth
-      let angle = card.angle
-      card.setDepth(this.selectedCard.depth)
-      card.angle = this.selectedCard.angle
-      this.selectedCard.angle = angle
-      this.selectedCard.setDepth(depth)
-      card.move(this.selectedCard.x, this.selectedCard.y)
       this.selectedCard = undefined
     } else {
       this.selectedCard = card
       card.setTint(0x00ffff)
     }
+  }
+
+  swapCards(cardA: Card, cardB: Card) {
+    const aIndex = this.deck.cards.indexOf(cardA)
+    const bIndex = this.deck.cards.indexOf(cardB)
+    const shouldSwap = aIndex !== -1 ? bIndex === -1 : bIndex !== -1
+    if (!shouldSwap) return
+
+    const a = aIndex > -1 ? cardA : cardB
+    const b = aIndex > -1 ? cardB : cardA
+    this.deck.cards = this.deck.cards.map((c) => (a === c ? b! : c))
+    this.player.cards = this.player.cards.map((c) => (b === c ? a! : c))
+    const depth = cardA.depth
+    const angle = cardA.angle
+    cardA.move(cardB.x, cardB.y)
+    cardB.move(cardA.x, cardA.y)
+    cardA.setDepth(cardB.depth)
+    cardB.setDepth(depth)
+    cardA.angle = cardB.angle
+    cardB.angle = angle
+  }
+
+  async delay(duration: number, callback: () => void) {
+    this.time.delayedCall(duration, callback)
   }
 }
