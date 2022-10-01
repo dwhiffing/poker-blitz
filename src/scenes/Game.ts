@@ -7,7 +7,6 @@ import { handToString, judgeWinner } from '../utils'
 
 // TODO: need to add ai
 // TODO: need to sort/highlight each card based on hand
-// console.log(judgeWinner(['AH AC KS KS 3D', 'AC AS KS KD 4D']))
 
 export default class Game extends Phaser.Scene {
   deck!: DeckService
@@ -168,3 +167,31 @@ export default class Game extends Phaser.Scene {
     this.time.delayedCall(duration, callback)
   }
 }
+
+// console.log(
+//   [
+//     [['AC 2S 3D 4D 5S', 'AC AS 2S 3D 4D'], 1], // pair beats high card
+//     [['AC AS 3D 4D 5S', 'AC AS 2S 2D 4D'], 1], // 2 pair beats pair
+//     [['AC AS 3D 3D 5S', 'AC AS AS 2D 4D'], 1], // 3oak beats 2 pair
+//     [['AC AS AD 3D 5S', 'AC KS QS JD TD'], 1], // straight beats 3oak
+//     [['AC KS QS JD TD', '2C 3C 5C JC TC'], 1], // flush beats straight
+//     [['2C 3C 5C JC TC', 'AC AD AH JD JS'], 1], // fullhouse beats flush
+//     [['AC AD AH JD JS', '2C 2S 2D 2H TC'], 1], // 4oak beats fullhouse
+//     [['AC AD AH AS JS', '2C 3C 4C 5C 6C'], 1], // straightflush beats 4oak
+//     [['2C 3C 4C 5C 6C', 'AC KC QC JC TC'], 1], // royalflush beats straightflush
+
+//     [['AH 2C 4S 6D 8D', 'AC QS 2S 4D 6D'], 1], // tiebreaker: high card goes to high kicker
+//     [['AH KC QS JD 5D', 'AC KS QS JD 6D'], 1], // tiebreaker: high card goes to high kicker
+//     [['AH AC QS 2D 3D', 'AC AS KS 2D 3D'], 1], // tiebreaker: pair goes to high kicker
+//     [['AH AC KS KD 3D', 'AC AS KS KD 4D'], 1], // tiebreaker: 2 pair goes to high kicker
+//     [['AH AC AS KD 3D', 'AC AS AS KD 4D'], 1], // tiebreaker: 3oak goes to high kicker
+//     [['2H 3C 4S 5D 6D', '3C 4S 5S 6D 7D'], 1], // tiebreaker: straight goes to high value
+//     [['2H 3H 4H 5H KH', '2C 3C 4C 5C AC'], 1], // tiebreaker: flush goes to high value
+//     [['AH AC AS QC QD', 'AC AS AS KD KC'], 1], // tiebreaker: fh goes to higher house
+//     [['AH AC AS AD QD', 'AC AS AS AD KC'], 1], // tiebreaker: 4oak goes to higher value
+//     [['2C 3C 4C 5C 6C', '3D 4D 5D 6D 7D'], 1], // tiebreaker: straightflush goes to high value
+//   ].every(
+//     ([hands, expectedWinner]) =>
+//       judgeWinner(hands as string[]) === expectedWinner,
+//   ),
+// )

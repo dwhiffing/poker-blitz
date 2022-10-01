@@ -46,10 +46,12 @@ const hasFullHouse = (hand: string) => {
 
 const hasStraight = (hand: string) => {
   const sortedCards = highestCard(hand)
-  const isStraight = sortedCards.every((card, index, cards) => {
-    if (index === 4) return true
-    return cards[index + 1] === CARD_ORDER[CARD_ORDER.indexOf(card) + 1]
-  })
+  const isStraight =
+    sortedCards.length === 5 &&
+    sortedCards.every((card, index, cards) => {
+      if (index === 4) return true
+      return cards[index + 1] === CARD_ORDER[CARD_ORDER.indexOf(card) + 1]
+    })
   return isStraight ? sortedCards[0] : false
 }
 
@@ -57,24 +59,16 @@ const hasStraightFlush = (hand: string) => hasFlush(hand) && hasStraight(hand)
 const hasRoyalFlush = (hand: string) => hasStraightFlush(hand) === 'A'
 
 export const getHandStrength = (hand: string): number =>
-  (_.find(_.range(bestHands.length) as number[], (bestHandsIndex) =>
+  _.find(_.range(bestHands.length) as number[], (bestHandsIndex) =>
     bestHands[bestHandsIndex](hand),
-  ) as number) || 9
+  ) as number
 
 export const judgeWinner = (players: string[]) => {
   const handStrengths = players.map(getHandStrength) as number[]
   if (handStrengths[0] !== handStrengths[1]) {
     return handStrengths.indexOf(_.min(handStrengths)!)
   }
-  // TODO: handle tiebreakers for edge cases
-  const tiebreakers = (
-    (
-      players
-        .map(bestHands[handStrengths[0]] as () => void)
-        .map((t) => (!Array.isArray(t) ? [t] : t)) as string[][]
-    ).map((hand: string[]) => hand.map(getValueIndex) as number[]) as number[][]
-  ).map((t) => (t.length === 1 ? t[0] : t))
-
+  const tiebreakers = players.map(sortCards).map((h) => h.map(getValueIndex))
   return tiebreakers.indexOf(_.min(tiebreakers)!)
 }
 
