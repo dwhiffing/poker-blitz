@@ -1,10 +1,9 @@
 import { chunk } from 'lodash'
-import shuffle from 'lodash/shuffle'
-import { ICard } from '../types'
-import { getHandStrengths } from '../utils'
+import Card from '../sprites/Card'
+import { getHandDescriptions, handToString, judgeWinner } from '../utils'
 
 export default class PlayerService {
-  cards: ICard[]
+  cards: Card[]
   scene: Phaser.Scene
   label: Phaser.GameObjects.BitmapText
   handLabels: Phaser.GameObjects.BitmapText[]
@@ -34,7 +33,7 @@ export default class PlayerService {
     this.y = y
   }
 
-  addCards(cards: ICard[]) {
+  addCards(cards: Card[]) {
     this.cards.push(...cards)
   }
 
@@ -43,8 +42,22 @@ export default class PlayerService {
   }
 
   evaluateHands() {
-    const hands = getHandStrengths(this.getHands())
-    this.handLabels.forEach((label, i) => (label.text = hands[i]))
-    return this.getHands()
+    const hands = this.getHands().sort((a, b) =>
+      judgeWinner([handToString(a), handToString(b)]) === 0 ? -1 : 1,
+    )
+
+    setTimeout(() => {
+      hands.forEach((hand, i) => {
+        hand.forEach((card) => card.move(card.x, this.y + 20 + i * 100))
+      })
+    }, 1)
+
+    const descriptions = getHandDescriptions(hands)
+    this.handLabels.forEach((label, i) => {
+      label.text = descriptions[i]
+      label.y = this.y + 20 + i * 100
+    })
+
+    return hands
   }
 }

@@ -5,9 +5,8 @@ import PlayerService from '../services/PlayerService'
 import Card from '../sprites/Card'
 import { handToString, judgeWinner } from '../utils'
 
-// TODO: need to sort each players hands by strength
 // TODO: need to add ai
-// TODO: need to sort each hand visually based on hand type, then highlight those cards
+// TODO: need to sort/highlight each card based on hand
 
 export default class Game extends Phaser.Scene {
   deck!: DeckService
@@ -99,7 +98,7 @@ export default class Game extends Phaser.Scene {
     }
   }
 
-  handleRoundEnd() {
+  async handleRoundEnd() {
     // check winner
     const playerHands = this.player.evaluateHands()
     const aiHands = this.ai.evaluateHands()

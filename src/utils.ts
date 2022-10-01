@@ -66,7 +66,7 @@ export const judgeWinner = (players: string[]) => {
   if (handStrengths[0] !== handStrengths[1]) {
     return handStrengths.indexOf(_.min(handStrengths)!)
   }
-  // TODO: tie breakers could be better
+  // TODO: handle tie breakers for high cards better
   const tiebreakers = (
     (
       players
@@ -84,7 +84,7 @@ export const handToString = (hand: ICard[]): string =>
 export const cardToString = (card: ICard): string =>
   CARD_VALUES[card.value] + SUIT_VALUES[card.suit]
 
-export const getHandStrengths = (hands: ICard[][]) =>
+export const getHandDescriptions = (hands: ICard[][]) =>
   hands.map((c) => HAND_DESCRIBERS[getHandStrength(handToString(c))](c))
 
 const bestHands = [
@@ -100,8 +100,12 @@ const bestHands = [
   highestCard,
 ]
 
-const highLabel = (h: ICard[]) =>
-  CARD_LABELS[h.map((c) => c.value).sort((a, b) => b - a)[0]]
+const highLabel = (h: ICard[]) => {
+  const value = h
+    .map((c) => [c.value, getValueIndex(CARD_VALUES[c.value])])
+    .sort((a, b) => a[1] - b[1])[0]
+  return CARD_LABELS[value[0]]
+}
 
 const pairLabel = (h: ICard[], n: number = 2) =>
   Object.entries(countValues(handToString(h)))
