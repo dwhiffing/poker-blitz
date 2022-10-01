@@ -57,15 +57,23 @@ export default class Game extends Phaser.Scene {
       roundCount++
     }
 
+    // TODO: need to sort each players hands by strength
+    // TODO: need to sort each hand visually based on hand type, then highlight those cards
     const playerHands = this.player.evaluateHands()
     const aiHands = this.ai.evaluateHands()
-    playerHands.forEach((pHand, i) => {
+    const results = playerHands.map((pHand, i) => {
       const aiHand = aiHands[i]
       const hands = [handToString(pHand), handToString(aiHand)]
       const isPlayerWinner = judgeWinner(hands) === 0
       this.player.handLabels[i].setTint(isPlayerWinner ? 0x33ff33 : 0xff1111)
       this.ai.handLabels[i].setTint(isPlayerWinner ? 0xff1111 : 0x33ff33)
+      return isPlayerWinner
     })
+    const playerWinCount = results.reduce((sum, n) => sum + (n ? 1 : 0), 0)
+    const winner = playerWinCount > 2 ? 'player' : 'bob'
+    this.add
+      .bitmapText(this.width / 2, 50, 'gem', `${winner} wins!`)
+      .setOrigin(0.5)
   }
 
   startTimer() {
@@ -97,6 +105,8 @@ export default class Game extends Phaser.Scene {
   }
 
   clickCard(card: Card) {
+    // TODO: prevent click if not in deck or one of players cards
+    // TODO: prevent click when game is over
     if (!this.allowInput) return
     if (this.selectedCard) {
       const aIndex = this.deck.cards.indexOf(card)
