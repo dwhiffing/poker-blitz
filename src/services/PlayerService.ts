@@ -15,7 +15,13 @@ export default class PlayerService {
   constructor(scene: Phaser.Scene, x: number, y: number, name: string) {
     this.scene = scene
     this.cards = []
-    this.label = this.scene.add.bitmapText(x, y - 40, 'gem', name, 16)
+    const winCount =
+      this.scene.registry.get(name === 'player' ? 'player-wins' : 'ai-wins') ||
+      0
+    const labelText = `${name} (${winCount} wins)`
+    this.label = this.scene.add
+      .bitmapText(x + 40, y - 35, 'gem', labelText, 16)
+      .setOrigin(0.5)
     const isRight = x > this.scene.cameras.main.width / 2
     this.handLabels = new Array(5).fill('').map((_, i) => {
       const _x = x - (isRight ? 40 : -120)

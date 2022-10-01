@@ -1,4 +1,3 @@
-import { chunk } from 'lodash'
 import Phaser from 'phaser'
 import { ROUND_DURATION } from '../constants'
 import DeckService from '../services/DeckService'
@@ -16,6 +15,8 @@ export default class Game extends Phaser.Scene {
   height: number
   roundTimer: number
   timerText!: Phaser.GameObjects.BitmapText
+  newGameText!: Phaser.GameObjects.BitmapText
+  winnerText!: Phaser.GameObjects.BitmapText
   constructor() {
     super('GameScene')
     this.width = 0
@@ -27,16 +28,23 @@ export default class Game extends Phaser.Scene {
   create() {
     this.deck = new DeckService(this)
     this.width = this.cameras.main.width
-    this.height = this.cameras.main.width
+    this.height = this.cameras.main.height
     this.deck.cards.forEach((card) =>
       card.on('pointerdown', () => this.clickCard(card)),
     )
     this.player = new PlayerService(this, 50, 50, 'player')
-    this.ai = new PlayerService(this, this.width - 110, 50, 'bob')
-    this.dealCards()
+    this.ai = new PlayerService(this, this.width - 120, 50, 'bob')
     this.timerText = this.add
       .bitmapText(this.width / 2, 50, 'gem', '')
       .setOrigin(0.5)
+    this.winnerText = this.add
+      .bitmapText(this.width / 2, 50, 'gem', '')
+      .setOrigin(0.5)
+    this.newGameText = this.add
+      .bitmapText(this.width / 2, this.height - 50, 'gem', '')
+      .setOrigin(0.5)
+
+    this.delay(300, this.dealCards.bind(this))
   }
 
   async delay(duration: number, callback: () => void) {
@@ -71,9 +79,12 @@ export default class Game extends Phaser.Scene {
     })
     const playerWinCount = results.reduce((sum, n) => sum + (n ? 1 : 0), 0)
     const winner = playerWinCount > 2 ? 'player' : 'bob'
-    this.add
-      .bitmapText(this.width / 2, 50, 'gem', `${winner} wins!`)
-      .setOrigin(0.5)
+    this.winnerText.text = `${winner} wins!`
+    this.newGameText.text = 'New game?'
+    this.registry.inc(playerWinCount > 2 ? 'player-wins' : 'ai-wins')
+    this.newGameText
+      .setInteractive()
+      .on('pointerdown', () => this.scene.restart())
   }
 
   startTimer() {
