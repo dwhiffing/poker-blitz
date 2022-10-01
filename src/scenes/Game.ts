@@ -1,5 +1,4 @@
 import Phaser from 'phaser'
-import { ANIM_TIME } from '../constants'
 import DeckService from '../services/DeckService'
 import PlayerService from '../services/PlayerService'
 import Card from '../sprites/Card'
@@ -10,11 +9,13 @@ export default class Game extends Phaser.Scene {
   ai!: PlayerService
   selectedCard?: Card
   width: number
+  allowInput: boolean
   height: number
   timerText?: Phaser.GameObjects.BitmapText
   constructor() {
     super('GameScene')
     this.width = 0
+    this.allowInput = false
     this.height = 0
   }
 
@@ -65,6 +66,7 @@ export default class Game extends Phaser.Scene {
         .setOrigin(0.5)
       let time = 10
       timerText.text = time.toString()
+      this.allowInput = true
       this.time.addEvent({
         repeat: 10,
         delay: 1000,
@@ -73,6 +75,11 @@ export default class Game extends Phaser.Scene {
             timerText.text = time.toString()
           } else {
             timerText.text = ''
+            if (this.selectedCard) {
+              this.selectedCard.clearTint()
+              this.selectedCard = undefined
+              this.allowInput = false
+            }
             resolve()
           }
         },
@@ -81,30 +88,16 @@ export default class Game extends Phaser.Scene {
   }
 
   clickCard(card: Card) {
-    // only allow clicking if round is active
-    // reset selected card when round ends
+    if (!this.allowInput) return
     if (this.selectedCard) {
-      if (
-        this.deck.cards.indexOf(card) > -1 &&
-        this.deck.cards.indexOf(this.selectedCard!) === -1
-      ) {
-        this.deck.cards = this.deck.cards.map((c) =>
-          card === c ? this.selectedCard! : c,
-        )
-        this.player.cards = this.player.cards.map((c) =>
-          this.selectedCard === c ? card! : c,
-        )
-      }
-      if (
-        this.deck.cards.indexOf(this.selectedCard) > -1 &&
-        this.deck.cards.indexOf(card!) === -1
-      ) {
-        this.deck.cards = this.deck.cards.map((c) =>
-          this.selectedCard === c ? card! : c,
-        )
-        this.player.cards = this.player.cards.map((c) =>
-          card === c ? this.selectedCard! : c,
-        )
+      const aIndex = this.deck.cards.indexOf(card)
+      const bIndex = this.deck.cards.indexOf(this.selectedCard)
+      const shouldSwap = aIndex !== -1 ? bIndex === -1 : bIndex !== -1
+      if (shouldSwap) {
+        const a = aIndex > -1 ? card : this.selectedCard
+        const b = aIndex > -1 ? this.selectedCard : card
+        this.deck.cards = this.deck.cards.map((c) => (a === c ? b! : c))
+        this.player.cards = this.player.cards.map((c) => (b === c ? a! : c))
       }
 
       this.selectedCard.clearTint()
