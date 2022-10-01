@@ -11,7 +11,7 @@ export default class PlayerService {
   constructor(scene: Phaser.Scene, x: number, y: number, name: string) {
     this.scene = scene
     this.cards = []
-    this.label = this.scene.add.bitmapText(x, y + 50, 'gem', name, 16)
+    this.label = this.scene.add.bitmapText(x, y - 40, 'gem', name, 16)
     this.x = x
     this.name = name
     this.y = y
