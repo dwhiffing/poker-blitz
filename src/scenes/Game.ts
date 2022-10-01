@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import { ROUND_DURATION } from '../constants'
 import DeckService from '../services/DeckService'
 import PlayerService from '../services/PlayerService'
 import Card from '../sprites/Card'
@@ -11,12 +12,14 @@ export default class Game extends Phaser.Scene {
   width: number
   allowInput: boolean
   height: number
-  timerText?: Phaser.GameObjects.BitmapText
+  roundTimer: number
+  timerText!: Phaser.GameObjects.BitmapText
   constructor() {
     super('GameScene')
     this.width = 0
     this.allowInput = false
     this.height = 0
+    this.roundTimer = 0
   }
 
   create() {
@@ -50,41 +53,42 @@ export default class Game extends Phaser.Scene {
         await this.deck.shuffle()
       }
       roundCount++
-      console.log('end round')
     }
-    console.log('end game')
+
+    console.log(this.player.cards)
     // TODO: score player hands, shuffle deck, deal 5 more cards to players
     // TODO: add scoring system
-    // need to read poker hands
+    // add bitmap text for each hand row
+    // need to read poker hands, assign score to each hand style
     // score text next to each hand and score total
   }
 
   startTimer() {
     return new Promise<void>((resolve) => {
-      const timerText = this.add
-        .bitmapText(this.width / 2, 50, 'gem', '')
-        .setOrigin(0.5)
-      let time = 10
-      timerText.text = time.toString()
+      this.roundTimer = ROUND_DURATION
+      this.timerText.text = this.roundTimer.toString()
       this.allowInput = true
+      this.tickTimer(resolve)
       this.time.addEvent({
-        repeat: 10,
+        repeat: ROUND_DURATION,
         delay: 1000,
-        callback: () => {
-          if (--time > -1) {
-            timerText.text = time.toString()
-          } else {
-            timerText.text = ''
-            if (this.selectedCard) {
-              this.selectedCard.clearTint()
-              this.selectedCard = undefined
-              this.allowInput = false
-            }
-            resolve()
-          }
-        },
+        callback: () => this.tickTimer(resolve),
       })
     })
+  }
+
+  tickTimer(callback: () => void) {
+    if (--this.roundTimer > -1) {
+      this.timerText.text = this.roundTimer.toString()
+    } else {
+      this.timerText.text = ''
+      if (this.selectedCard) {
+        this.selectedCard.clearTint()
+        this.selectedCard = undefined
+        this.allowInput = false
+      }
+      callback()
+    }
   }
 
   clickCard(card: Card) {
@@ -110,7 +114,6 @@ export default class Game extends Phaser.Scene {
       this.selectedCard.setDepth(depth)
       card.move(this.selectedCard.x, this.selectedCard.y)
       this.selectedCard = undefined
-      // need to check if cards are player/deck and swap if needed
     } else {
       this.selectedCard = card
       card.setTint(0x00ffff)
