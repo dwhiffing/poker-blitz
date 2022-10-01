@@ -3,6 +3,7 @@ import { ICard } from './types'
 
 const CARD_VALUES = 'A23456789TJQK'.split('')
 const SUIT_VALUES = 'CHSD'.split('')
+
 const CARD_ORDER = 'AKQJT98765432'.split('')
 const getValueIndex = (value: any) => CARD_ORDER.indexOf(value)
 
@@ -84,7 +85,7 @@ export const cardToString = (card: ICard): string =>
   CARD_VALUES[card.value] + SUIT_VALUES[card.suit]
 
 export const getHandStrengths = (hands: ICard[][]) =>
-  hands.map(handToString).map((c) => HAND_NAMES[getHandStrength(c)])
+  hands.map((c) => HAND_DESCRIBERS[getHandStrength(handToString(c))](c))
 
 const bestHands = [
   hasRoyalFlush,
@@ -99,15 +100,41 @@ const bestHands = [
   highestCard,
 ]
 
-export const HAND_NAMES = [
-  'royal flush',
-  'straight flush',
-  'four of a kind',
-  'full house',
-  'flush',
-  'straight',
-  '3 of a kind',
-  '2 pair',
-  'pair',
-  'high card',
+const highLabel = (h: ICard[]) =>
+  CARD_LABELS[h.map((c) => c.value).sort((a, b) => b - a)[0]]
+
+const pairLabel = (h: ICard[], n: number = 2) =>
+  Object.entries(countValues(handToString(h)))
+    .filter(([_, v]) => v === n)
+    .map((c) => CARD_VALUES.indexOf(c[0]))
+    .map((v) => CARD_LABELS[v] + 's')
+    .join(' and ')
+
+const HAND_DESCRIBERS = [
+  () => 'Royal Flush',
+  (h: ICard[]) => `Straight Flush (${highLabel(h)} high)`,
+  (h: ICard[]) => `4 of a kind (${pairLabel(h, 4)})`,
+  (h: ICard[]) => `Full house (${pairLabel(h, 3)} and ${pairLabel(h, 2)})`,
+  (h: ICard[]) => `Flush (${highLabel(h)} high)`,
+  (h: ICard[]) => `Straight (${highLabel(h)} high)`,
+  (h: ICard[]) => `3 of a kind (${pairLabel(h, 3)})`,
+  (h: ICard[]) => `2 pair ${pairLabel(h)}`,
+  (h: ICard[]) => `Pair of ${pairLabel(h)}`,
+  (h: ICard[]) => `High card (${highLabel(h)})`,
+]
+
+const CARD_LABELS = [
+  'Ace',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '10',
+  'Jack',
+  'Queen',
+  'King',
 ]
