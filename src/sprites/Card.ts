@@ -14,6 +14,7 @@ export default class Card extends Phaser.GameObjects.Sprite {
     super(scene, x, y, 'cards', 'bgblue.png')
     this.suit = suit
     this.value = value
+    this.setInteractive()
   }
 
   create() {
