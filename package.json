@@ -1,7 +1,7 @@
 {
-  "name": "ld2022",
+  "name": "poker-blitz",
   "version": "1.1.0",
-  "description": "ld2022",
+  "description": "Poker Blitz",
   "main": "dist/index.js",
   "scripts": {
     "dev": "vite",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dwhiffing/ld2022.git"
+    "url": "git+https://github.com/dwhiffing/poker-blitz.git"
   },
   "author": "Daniel Whiffing",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dwhiffing/ld2022/issues"
+    "url": "https://github.com/dwhiffing/poker-blitz/issues"
   },
-  "homepage": "https://github.com/dwhiffing/ld2022#readme",
+  "homepage": "https://github.com/dwhiffing/poker-blitz#readme",
   "devDependencies": {
     "@rollup/plugin-alias": "^3.1.9",
     "@rollup/plugin-commonjs": "^22.0.0",

@@ -65,6 +65,7 @@ export default class Game extends Phaser.Scene {
       roundCount++
     }
 
+    // TODO: need to add ai
     // TODO: need to sort each players hands by strength
     // TODO: need to sort each hand visually based on hand type, then highlight those cards
     const playerHands = this.player.evaluateHands()

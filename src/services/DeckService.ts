@@ -17,7 +17,6 @@ export default class DeckService {
         i % 13,
         Math.floor(i / 13),
       )
-      // card.setFrame(`${card.value + 1}${SUITS[card.suit]}.png`)
       this.scene.add.existing(card)
       return card
     })
