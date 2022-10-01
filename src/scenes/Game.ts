@@ -1,8 +1,10 @@
+import { chunk } from 'lodash'
 import Phaser from 'phaser'
 import { ROUND_DURATION } from '../constants'
 import DeckService from '../services/DeckService'
 import PlayerService from '../services/PlayerService'
 import Card from '../sprites/Card'
+import { handToString, judgeWinner } from '../utils'
 
 export default class Game extends Phaser.Scene {
   deck!: DeckService
@@ -55,12 +57,15 @@ export default class Game extends Phaser.Scene {
       roundCount++
     }
 
-    console.log(this.player.cards)
-    // TODO: score player hands, shuffle deck, deal 5 more cards to players
-    // TODO: add scoring system
-    // add bitmap text for each hand row
-    // need to read poker hands, assign score to each hand style
-    // score text next to each hand and score total
+    const playerHands = this.player.evaluateHands()
+    const aiHands = this.ai.evaluateHands()
+    playerHands.forEach((pHand, i) => {
+      const aiHand = aiHands[i]
+      const hands = [handToString(pHand), handToString(aiHand)]
+      const isPlayerWinner = judgeWinner(hands) === 0
+      this.player.handLabels[i].setTint(isPlayerWinner ? 0x33ff33 : 0xff1111)
+      this.ai.handLabels[i].setTint(isPlayerWinner ? 0xff1111 : 0x33ff33)
+    })
   }
 
   startTimer() {
