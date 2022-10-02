@@ -152,36 +152,59 @@ export default class Game extends Phaser.Scene {
     const results = playerHands.map((pHand, i) => {
       const aiHand = aiHands[i]
       const hands = [handToString(pHand), handToString(aiHand)]
-      const isPlayerWinner = judgeWinner(hands) === 0
-      this.player.handLabels[i].setTint(isPlayerWinner ? 0x33ff33 : 0xff1111)
-      this.ai.handLabels[i].setTint(isPlayerWinner ? 0xff1111 : 0x33ff33)
-      return isPlayerWinner
+      const winnerIndex = judgeWinner(hands)
+      this.player.handLabels[i].setTint(
+        winnerIndex === -1 ? 0xffff00 : winnerIndex === 0 ? 0x33ff33 : 0xff1111,
+      )
+      this.ai.handLabels[i].setTint(
+        winnerIndex === -1 ? 0xffff00 : winnerIndex === 0 ? 0xff1111 : 0x33ff33,
+      )
+      return winnerIndex
     })
 
     this.ai.cards.forEach((c) => c.toggle(true))
 
-    const playerWinCount = results.reduce((sum, n) => sum + (n ? 1 : 0), 0)
-    const winner = playerWinCount > 2 ? 'player' : 'ai'
-    this.registry.inc(`${winner}-wins`)
-    const gameWinner =
-      this.registry.get('player-wins') > this.numRounds / 2 ? 'player' : 'ai'
+    const playerWinCount = results.reduce((s, n) => s + (n === 0 ? 1 : 0), 0)
+    const aiWinCount = results.reduce((s, n) => s + (n === 1 ? 1 : 0), 0)
+    if (playerWinCount === aiWinCount) {
+      this.winnerText.text = "It's a tie!"
+      this.newGameText.text = 'Replay'
+    } else {
+      const winner = playerWinCount > aiWinCount ? 'player' : 'ai'
+      this.registry.inc(`${winner}-wins`)
+      const gameWinner =
+        this.registry.get('player-wins') > this.numRounds / 2 ? 'player' : 'ai'
+      let roundsRemaining = this.registry.get('num-rounds')
+      this.registry.set('num-rounds', roundsRemaining - 1)
+
+      const isEndOfGame =
+        roundsRemaining - 1 === 0 ||
+        this.registry.get('player-wins') > this.numRounds / 2 ||
+        this.registry.get('ai-wins') > this.numRounds / 2
+      this.winnerText.text = isEndOfGame
+        ? `${winner}'s hand!\n${gameWinner} wins!`
+        : `${winner}'s hand!`
+
+      this.newGameText.text = isEndOfGame ? 'Back to Menu' : 'Next game'
+      this.player.updateWinCount()
+      this.ai.updateWinCount()
+    }
+    this.newGameText
+      .setInteractive()
+      .on('pointerdown', this.onClickNextGame.bind(this))
+  }
+
+  onClickNextGame() {
     let roundsRemaining = this.registry.get('num-rounds')
     this.registry.set('num-rounds', roundsRemaining - 1)
 
     const isEndOfGame =
-      roundsRemaining - 1 === 0 ||
+      roundsRemaining === 0 ||
       this.registry.get('player-wins') > this.numRounds / 2 ||
       this.registry.get('ai-wins') > this.numRounds / 2
-    this.winnerText.text = isEndOfGame
-      ? `${winner}'s hand!\n${gameWinner} wins!`
-      : `${winner}'s hand!`
-    this.newGameText.text = isEndOfGame ? 'Back to Menu' : 'Next game'
-    this.player.updateWinCount()
-    this.ai.updateWinCount()
-    this.newGameText.setInteractive().on('pointerdown', () => {
-      if (isEndOfGame) this.scene.start('MenuScene')
-      else this.scene.restart()
-    })
+
+    if (isEndOfGame) this.scene.start('MenuScene')
+    else this.scene.restart()
   }
 
   clickCard(card: Card) {
