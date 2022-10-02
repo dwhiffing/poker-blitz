@@ -162,12 +162,17 @@ export default class Menu extends Phaser.Scene {
 
 const HELP_TEXT = [
   `Poker Blitz is a 2 player card game
-where you rush to build poker hands`,
+where you rush to build poker hands.`,
   `Each round, players are dealt 5 cards
 and the rest are scattered face up`,
   `Players have 10 seconds to swap their
-cards with the ones on the table`,
+cards with the ones on the table.
+You can swap from any of your hands.`,
+  `You will play against the computer.
+The card they will swap with is highlighted
+for a moment before they swap.`,
   `Every 10 seconds, a new round will
-begin until only 2 cards remain`,
-  `The player with the strongest hands wins`,
+begin until only 2 cards remain.
+Players don't swap in the last round.`,
+  `The player with the strongest 5 hands wins`,
 ]
