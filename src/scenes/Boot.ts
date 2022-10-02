@@ -17,7 +17,10 @@ export default class Boot extends Phaser.Scene {
 
     this.load.bitmapFont('gem', 'assets/gem.png', 'assets/gem.xml')
     this.load.image('logo', 'assets/phaser3-logo.png')
-    this.load.atlas('cards', 'assets/cards.png', 'assets/cards.json')
+    this.load.spritesheet('cards', 'assets/cards.png', {
+      frameHeight: 336,
+      frameWidth: 240,
+    })
 
     this.load.on('complete', () => {
       progress.destroy()

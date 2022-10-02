@@ -1,5 +1,5 @@
 import shuffle from 'lodash/shuffle'
-import { ANIM_TIME, SUITS } from '../constants'
+import { ANIM_TIME, CARD_WIDTH, CARD_HEIGHT, PLAYER_BUFFER } from '../constants'
 import Card from '../sprites/Card'
 import PlayerService from './PlayerService'
 
@@ -13,7 +13,7 @@ export default class DeckService {
       const card = new Card(
         this.scene,
         this.scene.cameras.main.width / 2,
-        50,
+        PLAYER_BUFFER + CARD_HEIGHT / 2,
         i % 13,
         Math.floor(i / 13),
       )
@@ -31,7 +31,15 @@ export default class DeckService {
           target.addCards([card])
           this.scene.time.delayedCall(i * ANIM_TIME, () => {
             card.toggle(target.name === 'Player')
-            card.move(target.x + i * 20, target.y + 20 + index * 100)
+            const x =
+              target.x +
+              (target.name === 'Player' ? CARD_WIDTH / 2 : CARD_WIDTH * -1.5) +
+              i * (CARD_WIDTH / 4)
+            const y =
+              target.y +
+              CARD_HEIGHT * 0.75 +
+              index * (CARD_HEIGHT + PLAYER_BUFFER)
+            card.move(x, y)
             card.setDepth(i)
           })
         }
@@ -47,7 +55,7 @@ export default class DeckService {
       for (let i = 0; i < this.cards.length; i++) {
         const card = this.cards[i]
         this.scene.time.delayedCall(i * (ANIM_TIME / 20), () => {
-          card.move(w / 2, 50)
+          card.move(w / 2, PLAYER_BUFFER + CARD_HEIGHT / 2)
           card.setAngle(0)
           card.setDepth(i)
           card.toggle(false)
@@ -65,8 +73,8 @@ export default class DeckService {
       for (let i = 0; i < this.cards.length; i++) {
         const card = this.cards[i]
         this.scene.time.delayedCall(i * (ANIM_TIME / 4), () => {
-          let baseW = 250 + round * 25
-          let baseH = 175 + round * 25
+          let baseW = 400 + round * 50
+          let baseH = 250 + round * 50
           card.move(rnd(baseW, w - baseW), rnd(baseH, h - baseH))
           card.setAngle(rnd(1, 350))
           card.setDepth(i)

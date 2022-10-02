@@ -1,5 +1,11 @@
 import { chunk, takeRight } from 'lodash'
-import { AIConfig, AI_CONFIG } from '../constants'
+import {
+  AIConfig,
+  AI_CONFIG,
+  CARD_HEIGHT,
+  CARD_WIDTH,
+  PLAYER_BUFFER,
+} from '../constants'
 import Card from '../sprites/Card'
 import {
   getHandDescriptions,
@@ -29,16 +35,16 @@ export default class PlayerService {
     this.scene = scene
     this.cards = []
     this.config = AI_CONFIG[(difficulty || 'EASY') as string]
-    this.label = this.scene.add
-      .bitmapText(x + 40, y - 35, 'gem', '', 16)
-      .setOrigin(0.5)
+    this.label = this.scene.add.bitmapText(x, y - 10, 'gem', '', 52)
     const isRight = x > this.scene.cameras.main.width / 2
-    this.handLabels = new Array(5).fill('').map((_, i) => {
-      const _x = x - (isRight ? 40 : -120)
-      const _y = y + 15 + i * 100
-      const _o = isRight ? 1 : 0
-      return this.scene.add.bitmapText(_x, _y, 'gem', '', 16).setOrigin(_o, 0.5)
-    })
+    this.label.setOrigin(isRight ? 1 : 0, 0.5)
+    this.handLabels = new Array(5)
+      .fill('')
+      .map((_, i) =>
+        this.scene.add
+          .bitmapText(x, 0, 'gem', '', 32)
+          .setOrigin(isRight ? 1 : 0, 0.5),
+      )
     this.x = x
     this.name = name
     this.y = y
@@ -50,7 +56,7 @@ export default class PlayerService {
       this.scene.registry.get(
         this.name === 'Player' ? 'player-wins' : 'ai-wins',
       ) || 0
-    this.label.text = `${this.name} (${winCount} wins)`
+    this.label.text = `${this.name} (${winCount})`
   }
 
   addCards(cards: Card[]) {
@@ -71,7 +77,7 @@ export default class PlayerService {
     const descriptions = getHandDescriptions(hands)
     this.handLabels.forEach((label, i) => {
       label.text = descriptions[i]
-      label.y = this.y + 20 + i * 100
+      label.y = this.y + CARD_HEIGHT * 1.4 + i * (CARD_HEIGHT + PLAYER_BUFFER)
     })
   }
 
@@ -80,7 +86,12 @@ export default class PlayerService {
 
     setTimeout(() => {
       hands.forEach((hand, i) => {
-        hand.forEach((card) => card.move(card.x, this.y + 20 + i * 100))
+        hand.forEach((card) =>
+          card.move(
+            card.x,
+            this.y + CARD_HEIGHT * 0.75 + i * (CARD_HEIGHT + PLAYER_BUFFER),
+          ),
+        )
       })
     }, 10)
 

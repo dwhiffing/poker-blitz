@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { ROUND_DELAY, ROUND_DURATION } from '../constants'
+import { PLAYER_BUFFER, ROUND_DELAY, ROUND_DURATION } from '../constants'
 import DeckService from '../services/DeckService'
 import PlayerService from '../services/PlayerService'
 import Card from '../sprites/Card'
@@ -51,20 +51,20 @@ export default class Game extends Phaser.Scene {
       card.on('pointerdown', () => this.clickCard(card)),
     )
 
-    this.player = new PlayerService(this, 50, 50, 'Player')
-    const w = this.width - 120
+    this.player = new PlayerService(this, 20, PLAYER_BUFFER, 'Player')
+    const w = this.width - 20
     const name = `${this.difficulty} CPU`
-    this.ai = new PlayerService(this, w, 50, name, this.difficulty)
+    this.ai = new PlayerService(this, w, PLAYER_BUFFER, name, this.difficulty)
 
     this.timerText = this.add
-      .bitmapText(this.width / 2, 50, 'gem', '')
-      .setOrigin(0.5)
+      .bitmapText(this.width / 2, 50, 'gem', '', 64)
+      .setOrigin(0.5, 0)
     this.winnerText = this.add
-      .bitmapText(this.width / 2, 50, 'gem', '')
-      .setOrigin(0.5)
+      .bitmapText(this.width / 2, 30, 'gem', '', 64)
+      .setOrigin(0.5, 0)
       .setCenterAlign()
     this.newGameText = this.add
-      .bitmapText(this.width / 2, this.height - 50, 'gem', '')
+      .bitmapText(this.width / 2, this.height - 80, 'gem', '', 64)
       .setOrigin(0.5)
 
     this.delay(300, this.playRound.bind(this))
@@ -172,10 +172,8 @@ export default class Game extends Phaser.Scene {
       this.winnerText.text = "It's a tie!"
       this.newGameText.text = 'Replay'
     } else {
-      const winner = playerWinCount > aiWinCount ? 'player' : 'ai'
-      this.registry.inc(`${winner}-wins`)
-      const gameWinner =
-        this.registry.get('player-wins') > this.numRounds / 2 ? 'player' : 'ai'
+      const winner = playerWinCount > aiWinCount ? 'player' : 'AI'
+      this.registry.inc(`${winner === 'player' ? 'player' : 'ai'}-wins`)
       let roundsRemaining = this.registry.get('num-rounds')
       this.registry.set('num-rounds', roundsRemaining - 1)
 
@@ -184,7 +182,7 @@ export default class Game extends Phaser.Scene {
         this.registry.get('player-wins') > this.numRounds / 2 ||
         this.registry.get('ai-wins') > this.numRounds / 2
       this.winnerText.text = isEndOfGame
-        ? `${winner}'s hand!\n${gameWinner} wins!`
+        ? `${winner}'s hand!\n${winner} wins!`
         : `${winner}'s hand!`
 
       this.newGameText.text = isEndOfGame ? 'Back to Menu' : 'Next game'

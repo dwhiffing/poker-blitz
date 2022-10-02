@@ -11,19 +11,20 @@ export default class Card extends Phaser.GameObjects.Sprite {
     value: number,
     suit: number,
   ) {
-    super(scene, x, y, 'cards', 'bgblue.png')
+    super(scene, x, y, 'cards', 52)
     this.suit = suit
     this.value = value
     this.setInteractive()
+    this.setDisplaySize(120, 168)
   }
 
   create() {}
 
-  toggle(state: boolean = this.frame.name === 'bgblue.png') {
+  toggle(state: boolean = this.frame.name === '52') {
     if (state) {
-      this.setFrame(`${this.value + 1}${SUITS[this.suit]}.png`)
+      this.setFrame(this.value + this.suit * 13)
     } else {
-      this.setFrame(`bgblue.png`)
+      this.setFrame(52)
     }
   }
 

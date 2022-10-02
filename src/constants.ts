@@ -24,3 +24,7 @@ export interface AIConfig {
   endWait: number
   cardSlice: number
 }
+
+export const CARD_WIDTH = 120
+export const CARD_HEIGHT = 168
+export const PLAYER_BUFFER = 70
