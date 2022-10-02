@@ -1,4 +1,4 @@
-import { chunk } from 'lodash'
+import { chunk, takeRight } from 'lodash'
 import Card from '../sprites/Card'
 import {
   getHandDescriptions,
@@ -74,7 +74,7 @@ export default class PlayerService {
     const hands = this.getHandsSorted()
     const worstHand = hands[hands.length - 1]
     const bestSwaps = worstHand.map((aiCard, i, aiHand) => {
-      const allSwaps = deck.cards.map((card) => [
+      const allSwaps = takeRight(deck.cards, 12).map((card) => [
         card,
         aiHand.map((c) => (c === aiCard ? card : c)),
       ])
