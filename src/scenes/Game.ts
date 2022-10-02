@@ -91,6 +91,9 @@ export default class Game extends Phaser.Scene {
   tickRoundTimer(callback: () => void) {
     if (--this.roundTimer > -1) {
       this.timerText.text = this.roundTimer.toString()
+
+      const [a, b] = this.ai.getBestSwap(this.deck)
+      this.swapCards(a, b, this.ai)
     } else {
       this.timerText.text = ''
       if (this.selectedCard) {

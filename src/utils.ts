@@ -97,6 +97,11 @@ export const cardToString = (card: ICard): string =>
 export const getHandDescriptions = (hands: ICard[][]) =>
   hands.map((c) => HAND_DESCRIBERS[getHandStrength(handToString(c))](c))
 
+export const getBestHand = (hands: ICard[][]) =>
+  hands.sort((a, b) =>
+    judgeWinner([handToString(a), handToString(b)]) === 0 ? -1 : 1,
+  )[0]
+
 const bestHands = [
   hasRoyalFlush,
   hasStraightFlush,

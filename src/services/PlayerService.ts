@@ -1,6 +1,12 @@
 import { chunk } from 'lodash'
 import Card from '../sprites/Card'
-import { getHandDescriptions, handToString, judgeWinner } from '../utils'
+import {
+  getHandDescriptions,
+  getBestHand,
+  handToString,
+  judgeWinner,
+} from '../utils'
+import DeckService from './DeckService'
 
 export default class PlayerService {
   cards: Card[]
@@ -41,10 +47,13 @@ export default class PlayerService {
     return chunk(this.cards, 5)
   }
 
-  evaluateHands() {
-    const hands = this.getHands().sort((a, b) =>
+  getHandsSorted() {
+    return this.getHands().sort((a, b) =>
       judgeWinner([handToString(a), handToString(b)]) === 0 ? -1 : 1,
     )
+  }
+  evaluateHands() {
+    const hands = this.getHandsSorted()
 
     setTimeout(() => {
       hands.forEach((hand, i) => {
@@ -59,5 +68,22 @@ export default class PlayerService {
     })
 
     return hands
+  }
+
+  getBestSwap(deck: DeckService) {
+    const hands = this.getHandsSorted()
+    const worstHand = hands[hands.length - 1]
+    const bestSwaps = worstHand.map((aiCard, i, aiHand) => {
+      const allSwaps = deck.cards.map((card) => [
+        card,
+        aiHand.map((c) => (c === aiCard ? card : c)),
+      ])
+      const bestSwap = getBestHand(allSwaps.map((c) => c[1]) as Card[][])
+      return [aiCard, allSwaps.find((_c) => _c[1] === bestSwap)]
+    }) as [Card, [Card, Card[]]][]
+
+    const bestSwap = getBestHand(bestSwaps.map((c) => c[1][1]))
+    const bestSwapCards = bestSwaps.find((c) => c[1][1] === bestSwap)!
+    return [bestSwapCards[0], bestSwapCards[1][0]]
   }
 }
