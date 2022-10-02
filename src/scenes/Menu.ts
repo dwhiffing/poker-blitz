@@ -150,15 +150,15 @@ export default class Menu extends Phaser.Scene {
       .setInteractive()
       .on('pointerdown', () => {
         this.sound.mute = !this.sound.mute
-        window.localStorage.setItem(
-          'poker-blitz-mute',
-          this.sound.mute ? '0' : '1',
-        )
+        // window.localStorage.setItem(
+        //   'poker-blitz-mute',
+        //   this.sound.mute ? '0' : '1',
+        // )
         muteButton.setFrame(this.sound.mute ? 1 : 0)
       })
-    if (window.localStorage.getItem('poker-blitz-mute') === '1') {
-      muteButton.emit('pointerdown')
-    }
+    // if (window.localStorage.getItem('poker-blitz-mute') === '1') {
+    //   muteButton.emit('pointerdown')
+    // }
 
     const helpButton = this.add
       .text(w / 2, h - 150, 'Help')

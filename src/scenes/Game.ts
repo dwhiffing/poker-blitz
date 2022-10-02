@@ -78,10 +78,10 @@ export default class Game extends Phaser.Scene {
       .setInteractive()
       .on('pointerdown', () => {
         this.sound.mute = !this.sound.mute
-        window.localStorage.setItem(
-          'poker-blitz-mute',
-          this.sound.mute ? '0' : '1',
-        )
+        // window.localStorage.setItem(
+        //   'poker-blitz-mute',
+        //   this.sound.mute ? '0' : '1',
+        // )
         muteButton.setFrame(this.sound.mute ? 1 : 0)
       })
 
