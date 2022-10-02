@@ -88,16 +88,21 @@ export default class Menu extends Phaser.Scene {
 
     // help stuff
     const onClickTopButton = () => {
+      this.sound.play('tick')
       showPlayOptions()
     }
     const onClickBottomButton = () => {
       if (isShowingPlayOptions) {
         this.registry.set('num-rounds', ROUND_COUNTS[roundCountIndex])
-        this.scene.start('GameScene', {
-          numRounds: ROUND_COUNTS[roundCountIndex],
-          difficulty: DIFFICULTY[difficultyIndex],
+        this.sound.play('game-end')
+        this.time.delayedCall(500, () => {
+          this.scene.start('GameScene', {
+            numRounds: ROUND_COUNTS[roundCountIndex],
+            difficulty: DIFFICULTY[difficultyIndex],
+          })
         })
       } else {
+        this.sound.play('tick')
         if (helpTextIndex < HELP_TEXT.length) {
           playButton.text = ''
           helpButton.text = 'Next'
@@ -124,6 +129,22 @@ export default class Menu extends Phaser.Scene {
       .setFontSize(64)
       .setInteractive()
       .on('pointerdown', onClickTopButton)
+
+    const muteButton = this.add
+      .sprite(w, h, 'icons', 1)
+      .setOrigin(1.2, 1.2)
+      .setInteractive()
+      .on('pointerdown', () => {
+        this.sound.mute = !this.sound.mute
+        window.localStorage.setItem(
+          'poker-blitz-mute',
+          this.sound.mute ? '0' : '1',
+        )
+        muteButton.setFrame(this.sound.mute ? 1 : 0)
+      })
+    if (window.localStorage.getItem('poker-blitz-mute') === '1') {
+      muteButton.emit('pointerdown')
+    }
 
     const helpButton = this.add
       .text(w / 2, h - 200, 'Help')

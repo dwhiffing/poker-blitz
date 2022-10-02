@@ -75,6 +75,19 @@ export default class Game extends Phaser.Scene {
       .setFontFamily(FONT_NAME)
       .setOrigin(0.5)
 
+    const muteButton = this.add
+      .sprite(this.width, this.height, 'icons', this.sound.mute ? 0 : 1)
+      .setOrigin(1.2, 1.2)
+      .setInteractive()
+      .on('pointerdown', () => {
+        this.sound.mute = !this.sound.mute
+        window.localStorage.setItem(
+          'poker-blitz-mute',
+          this.sound.mute ? '0' : '1',
+        )
+        muteButton.setFrame(this.sound.mute ? 1 : 0)
+      })
+
     this.delay(300, this.playRound.bind(this))
   }
 
@@ -145,7 +158,7 @@ export default class Game extends Phaser.Scene {
 
     const [a, b] = this.ai.getBestSwap(this.deck)
     if (a && b) {
-      b.setTint(0x00ffff)
+      b.setTint(0x0000ff)
       this.sound.play('cpu-look')
 
       await new Promise((resolve) => this.delay(d / startWait, resolve))
