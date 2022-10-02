@@ -197,6 +197,7 @@ export default class Game extends Phaser.Scene {
 //     [['AH AC AS QC QD', 'AC AS AS KD KC'], 1], // tiebreaker: fh goes to higher house
 //     [['AH AC AS AD QD', 'AC AS AS AD KC'], 1], // tiebreaker: 4oak goes to higher value
 //     [['2C 3C 4C 5C 6C', '3D 4D 5D 6D 7D'], 1], // tiebreaker: straightflush goes to high value
+//     [['4C 4S 4H 4D AC', '4C 4S 4H 4D AD'], -1], // tiebreaker: straightflush goes to high value
 //   ].every(
 //     ([hands, expectedWinner]) =>
 //       judgeWinner(hands as string[]) === expectedWinner,

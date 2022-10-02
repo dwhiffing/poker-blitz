@@ -85,6 +85,10 @@ export const judgeWinner = (players: string[]) => {
   const tiebreakerKickers = players
     .map(sortCards)
     .map((h) => h.map(getValueIndex))
+
+  // if hands are exactly the same, it's a tie, return -1
+  if (_.isEqual(tiebreakerKickers[0], tiebreakerKickers[1])) return -1
+
   return tiebreakerKickers.indexOf(_.min(tiebreakerKickers)!)
 }
 
