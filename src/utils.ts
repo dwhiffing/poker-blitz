@@ -136,12 +136,12 @@ const pairLabel = (h: ICard[], n: number = 2) =>
 const HAND_DESCRIBERS = [
   () => 'Royal Flush',
   (h: ICard[]) => `Straight Flush (${highLabel(h)} high)`,
-  (h: ICard[]) => `4 of a kind (${pairLabel(h, 4)})`,
+  (h: ICard[]) => `4 of a Kind (${pairLabel(h, 4)})`,
   (h: ICard[]) => `Full house (${pairLabel(h, 3)} and ${pairLabel(h, 2)})`,
   (h: ICard[]) => `Flush (${highLabel(h)} high)`,
   (h: ICard[]) => `Straight (${highLabel(h)} high)`,
-  (h: ICard[]) => `3 of a kind (${pairLabel(h, 3)})`,
-  (h: ICard[]) => `2 pair ${pairLabel(h)}`,
+  (h: ICard[]) => `3 of a Kind (${pairLabel(h, 3)})`,
+  (h: ICard[]) => `2 Pair (${pairLabel(h)})`,
   (h: ICard[]) => `Pair of ${pairLabel(h)}`,
   (h: ICard[]) => `High card (${highLabel(h)})`,
 ]

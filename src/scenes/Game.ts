@@ -183,8 +183,8 @@ export default class Game extends Phaser.Scene {
       const aiHand = aiHands[i]
       const hands = [handToString(pHand), handToString(aiHand)]
       const winnerIndex = judgeWinner(hands)
-      this.player.handLabels[i].setTint(winnerIndex === 0 ? 0x00ff00 : 0xffffff)
-      this.ai.handLabels[i].setTint(winnerIndex === 1 ? 0x00ff00 : 0xffffff)
+      this.player.handLabels[i].setTint(winnerIndex === 0 ? 0x00ff00 : 0xf14f1d)
+      this.ai.handLabels[i].setTint(winnerIndex === 1 ? 0x00ff00 : 0xf14f1d)
       return winnerIndex
     })
 
