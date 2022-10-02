@@ -95,6 +95,10 @@ export default class Game extends Phaser.Scene {
   async playRound() {
     this.roundCount = 0
     while (this.roundCount <= 4) {
+      await this.deck.shuffle()
+
+      await new Promise((resolve) => this.delay(100, resolve))
+
       await this.deck.deal(5, this.player, this.roundCount)
       this.player.updateHandDescriptions()
 
@@ -106,7 +110,6 @@ export default class Game extends Phaser.Scene {
       await this.deck.scatter(this.roundCount)
       if (this.roundCount < 4) {
         await this.startRoundTimer()
-        await this.deck.shuffle()
         await new Promise((resolve) => this.delay(100, resolve))
       }
       this.roundCount++
