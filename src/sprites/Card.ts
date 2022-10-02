@@ -32,7 +32,7 @@ export default class Card extends Phaser.GameObjects.Sprite {
       targets: this,
       x,
       y,
-      duration: ANIM_TIME,
+      duration: ANIM_TIME * 2,
     })
   }
 }
