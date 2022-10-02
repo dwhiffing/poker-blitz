@@ -10,10 +10,6 @@ import PlayerService from '../services/PlayerService'
 import Card from '../sprites/Card'
 import { handToString, judgeWinner } from '../utils'
 
-// TODO: need to add ai
-// based on difficulty, ai makes a move every n seconds
-// start with random move, then make ai more strategic
-
 // TODO: need to sort/highlight each card based on hand
 
 export default class Game extends Phaser.Scene {
