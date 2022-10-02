@@ -137,7 +137,7 @@ export default class Game extends Phaser.Scene {
       return
 
     if (this.selectedCard) {
-      this.swapCards(card, this.selectedCard)
+      this.swapCards(card, this.selectedCard, this.player)
       this.selectedCard.clearTint()
       this.selectedCard = undefined
     } else {
@@ -146,7 +146,7 @@ export default class Game extends Phaser.Scene {
     }
   }
 
-  swapCards(cardA: Card, cardB: Card) {
+  swapCards(cardA: Card, cardB: Card, player: PlayerService) {
     const aIndex = this.deck.cards.indexOf(cardA)
     const bIndex = this.deck.cards.indexOf(cardB)
     const shouldSwap = aIndex !== -1 ? bIndex === -1 : bIndex !== -1
@@ -155,7 +155,7 @@ export default class Game extends Phaser.Scene {
     const a = aIndex > -1 ? cardA : cardB
     const b = aIndex > -1 ? cardB : cardA
     this.deck.cards = this.deck.cards.map((c) => (a === c ? b! : c))
-    this.player.cards = this.player.cards.map((c) => (b === c ? a! : c))
+    player.cards = player.cards.map((c) => (b === c ? a! : c))
     const depth = cardA.depth
     const angle = cardA.angle
     cardA.move(cardB.x, cardB.y)
