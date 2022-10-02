@@ -66,6 +66,15 @@ export default class PlayerService {
       judgeWinner([handToString(a), handToString(b)]) === 0 ? -1 : 1,
     )
   }
+
+  updateHandDescriptions(hands = this.getHands()) {
+    const descriptions = getHandDescriptions(hands)
+    this.handLabels.forEach((label, i) => {
+      label.text = descriptions[i]
+      label.y = this.y + 20 + i * 100
+    })
+  }
+
   evaluateHands() {
     const hands = this.getHandsSorted()
 
@@ -75,11 +84,7 @@ export default class PlayerService {
       })
     }, 10)
 
-    const descriptions = getHandDescriptions(hands)
-    this.handLabels.forEach((label, i) => {
-      label.text = descriptions[i]
-      label.y = this.y + 20 + i * 100
-    })
+    this.updateHandDescriptions(hands)
 
     return hands
   }

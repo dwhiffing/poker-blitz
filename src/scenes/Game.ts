@@ -75,6 +75,8 @@ export default class Game extends Phaser.Scene {
     while (this.roundCount <= 4) {
       if (this.roundCount > 0) await this.deck.shuffle()
       await this.deck.deal(5, this.player, this.roundCount)
+      this.player.updateHandDescriptions()
+
       await this.deck.deal(5, this.ai, this.roundCount)
       await this.deck.scatter(this.roundCount)
       if (this.roundCount < 4) {
@@ -217,6 +219,7 @@ export default class Game extends Phaser.Scene {
 
     if (this.selectedCard) {
       this.swapCards(card, this.selectedCard, this.player)
+      this.player.updateHandDescriptions()
       this.selectedCard.clearTint()
       this.selectedCard = undefined
     } else {

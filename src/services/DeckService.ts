@@ -53,7 +53,7 @@ export default class DeckService {
           card.toggle(false)
         })
       }
-      this.scene.time.delayedCall(this.cards.length * (ANIM_TIME / 4), resolve)
+      this.scene.time.delayedCall(this.cards.length * (ANIM_TIME / 15), resolve)
     })
   }
 
