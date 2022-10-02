@@ -28,12 +28,14 @@ export default class Card extends Phaser.GameObjects.Sprite {
     }
   }
 
-  move(x: number, y: number) {
+  move(x: number, y: number, angle: number = 0) {
     this.scene.tweens.add({
       targets: this,
       x,
       y,
-      duration: ANIM_TIME * 2,
+      angle,
+      ease: Phaser.Math.Easing.Quadratic.Out,
+      duration: ANIM_TIME * 3,
     })
   }
 }

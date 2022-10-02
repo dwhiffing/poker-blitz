@@ -62,8 +62,7 @@ export default class DeckService {
             this.scene.time.delayedCall(Math.floor(i / 20) * 200, () =>
               this.scene.sound.play('shuffle'),
             )
-          card.move(w / 2, PLAYER_BUFFER + CARD_HEIGHT / 2)
-          card.setAngle(0)
+          card.move(w / 2, PLAYER_BUFFER + CARD_HEIGHT / 2, 0)
           card.setDepth(i)
           card.toggle(false)
         })
@@ -83,8 +82,7 @@ export default class DeckService {
           let baseW = 350 + round * 50
           let baseH = 350 + round * 50
           if (i % 3 === 0) this.scene.sound.play('player-swap')
-          card.move(rnd(baseW, w - baseW), rnd(baseH, h - baseH))
-          card.setAngle(rnd(1, 350))
+          card.move(rnd(baseW, w - baseW), rnd(baseH, h - baseH), rnd(1, 350))
           card.setDepth(i)
           card.toggle(true)
         })
