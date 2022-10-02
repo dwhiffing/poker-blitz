@@ -105,14 +105,18 @@ export default class Game extends Phaser.Scene {
       await new Promise((resolve) => this.delay(50, resolve))
 
       await this.deck.deal(5, this.ai, this.roundCount)
-
       await new Promise((resolve) => this.delay(50, resolve))
+
       await this.deck.scatter(this.roundCount)
+
+      await new Promise((resolve) => this.delay(100, resolve))
+      this.allowInput = true
+
       if (this.roundCount < 4) {
         await this.startRoundTimer()
-        await new Promise((resolve) => this.delay(100, resolve))
       }
       this.roundCount++
+      this.allowInput = false
     }
     this.handleRoundEnd()
   }
