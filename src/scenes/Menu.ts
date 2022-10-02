@@ -91,10 +91,13 @@ export default class Menu extends Phaser.Scene {
       this.sound.play('tick')
       showPlayOptions()
     }
+    let hasStarted = false
     const onClickBottomButton = () => {
       if (isShowingPlayOptions) {
+        if (hasStarted) return
         this.registry.set('num-rounds', ROUND_COUNTS[roundCountIndex])
         this.sound.play('game-end')
+        hasStarted = true
         this.time.delayedCall(500, () => {
           this.scene.start('GameScene', {
             numRounds: ROUND_COUNTS[roundCountIndex],
