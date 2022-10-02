@@ -95,7 +95,7 @@ export default class Game extends Phaser.Scene {
   async playRound() {
     this.roundCount = 0
     while (this.roundCount <= 4) {
-      await this.deck.shuffle()
+      if (this.roundCount > 0) await this.deck.shuffle()
 
       await new Promise((resolve) => this.delay(100, resolve))
 
@@ -178,7 +178,10 @@ export default class Game extends Phaser.Scene {
       this.sound.play('cpu-swap')
       this.swapCards(a, b, this.ai)
 
+      if (this.roundTimer <= 0) return
+
       await new Promise((resolve) => this.delay(d / endWait, resolve))
+
       this.aiMove()
     }
   }
