@@ -262,13 +262,21 @@ export default class Game extends Phaser.Scene {
   swapCards(cardA: Card, cardB: Card, player: PlayerService) {
     const aIndex = this.deck.cards.indexOf(cardA)
     const bIndex = this.deck.cards.indexOf(cardB)
-    const shouldSwap = aIndex !== -1 ? bIndex === -1 : bIndex !== -1
+    const aIndex2 = player.cards.indexOf(cardA)
+    const bIndex2 = player.cards.indexOf(cardB)
+    const isBetweenHands = aIndex2 !== -1 && bIndex2 !== -1
+    const shouldSwap =
+      (aIndex !== -1 ? bIndex === -1 : bIndex !== -1) || isBetweenHands
     if (!shouldSwap) return
 
     const a = aIndex > -1 ? cardA : cardB
     const b = aIndex > -1 ? cardB : cardA
-    this.deck.cards = this.deck.cards.map((c) => (a === c ? b! : c))
-    player.cards = player.cards.map((c) => (b === c ? a! : c))
+    if (isBetweenHands) {
+      player.cards = player.cards.map((c) => (b === c ? a! : a === c ? b! : c))
+    } else {
+      this.deck.cards = this.deck.cards.map((c) => (a === c ? b! : c))
+      player.cards = player.cards.map((c) => (b === c ? a! : c))
+    }
     const depth = cardA.depth
     const angle = cardA.angle
     cardA.move(cardB.x, cardB.y)
