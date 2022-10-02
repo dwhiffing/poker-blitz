@@ -13,6 +13,8 @@ import {
   getBestHand,
   handToString,
   judgeWinner,
+  countValues,
+  CARD_VALUES,
 } from '../utils'
 import DeckService from './DeckService'
 
@@ -70,9 +72,21 @@ export default class PlayerService {
   }
 
   getHandsSorted() {
-    return this.getHands().sort((a, b) =>
-      judgeWinner([handToString(a), handToString(b)]) === 0 ? -1 : 1,
-    )
+    return this.getHands()
+      .sort((a, b) =>
+        judgeWinner([handToString(a), handToString(b)]) === 0 ? -1 : 1,
+      )
+      .map((hand) => {
+        const values = countValues(handToString(hand))
+        return hand
+          .sort(
+            (a, b) =>
+              (b.value === 0 ? 13 : b.value) - (a.value === 0 ? 13 : a.value),
+          )
+          .sort((a, b) => {
+            return values[CARD_VALUES[b.value]] - values[CARD_VALUES[a.value]]
+          })
+      })
   }
 
   updateHandDescriptions(hands = this.getHands()) {
@@ -88,12 +102,15 @@ export default class PlayerService {
 
     setTimeout(() => {
       hands.forEach((hand, i) => {
-        hand.forEach((card) =>
+        hand.forEach((card, _i) => {
+          card.setDepth(_i)
           card.move(
-            card.x,
+            this.x +
+              (this.name === 'Player' ? CARD_WIDTH / 2 : CARD_WIDTH * -1.5) +
+              _i * (CARD_WIDTH / 4),
             this.y + CARD_HEIGHT * 0.75 + i * (CARD_HEIGHT + PLAYER_BUFFER),
-          ),
-        )
+          )
+        })
       })
     }, 10)
 

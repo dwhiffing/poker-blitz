@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { ICard } from './types'
 
-const CARD_VALUES = 'A23456789TJQK'.split('')
+export const CARD_VALUES = 'A23456789TJQK'.split('')
 const SUIT_VALUES = 'CHSD'.split('')
 
 const CARD_ORDER = 'AKQJT98765432'.split('')
@@ -10,7 +10,7 @@ const getValueIndex = (value: any) => CARD_ORDER.indexOf(value)
 const countCards = (indexToCount: number, hand: string) =>
   _.countBy(hand.split(' '), indexToCount)
 
-const countValues = _.curry(countCards)(0)
+export const countValues = _.curry(countCards)(0)
 const countSuits = _.curry(countCards)(1)
 
 const sortCards = (hand: string) =>
