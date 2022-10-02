@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import { FONT_NAME } from '../constants'
+import DeckService from '../services/DeckService'
 
 const ROUND_COUNTS = [1, 3, 5]
 const DIFFICULTY = ['EASY', 'MEDIUM', 'HARD']
@@ -17,12 +18,15 @@ export default class Menu extends Phaser.Scene {
     let roundCountIndex = 0
     let difficultyIndex = 0
 
+    const deck = new DeckService(this)
+    deck.scatter(2)
+
     this.registry.set('player-wins', 0)
     this.registry.set('ai-wins', 0)
 
     // title
     this.add
-      .text(w / 2, 200, 'Poker Blitz')
+      .text(w / 2, 150, 'Poker Blitz')
       .setOrigin(0.5)
       .setFontFamily(FONT_NAME)
       .setFontSize(100)
@@ -76,6 +80,7 @@ export default class Menu extends Phaser.Scene {
     difficultyButtons[0].setColor('#ffffff')
     const showPlayOptions = () => {
       if (isShowingPlayOptions) return
+      deck.cards.forEach((c) => c.setAlpha(0))
       isShowingPlayOptions = true
       const buttons = [...roundCountButtons, ...difficultyButtons]
       buttons.forEach((b) => b.setAlpha(1))
@@ -105,6 +110,7 @@ export default class Menu extends Phaser.Scene {
           })
         })
       } else {
+        deck.cards.forEach((c) => c.setAlpha(0))
         this.sound.play('tick')
         if (helpTextIndex < HELP_TEXT.length) {
           playButton.text = ''
@@ -126,7 +132,7 @@ export default class Menu extends Phaser.Scene {
       .setLineSpacing(10)
 
     const playButton = this.add
-      .text(w / 2, h - 300, 'Play')
+      .text(w / 2, h - 250, 'Play')
       .setOrigin(0.5)
       .setFontFamily(FONT_NAME)
       .setFontSize(64)
@@ -150,7 +156,7 @@ export default class Menu extends Phaser.Scene {
     }
 
     const helpButton = this.add
-      .text(w / 2, h - 200, 'Help')
+      .text(w / 2, h - 150, 'Help')
       .setOrigin(0.5)
       .setFontFamily(FONT_NAME)
       .setFontSize(64)
