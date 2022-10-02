@@ -46,7 +46,7 @@ export default class DeckService {
     return new Promise<void>((resolve) => {
       for (let i = 0; i < this.cards.length; i++) {
         const card = this.cards[i]
-        this.scene.time.delayedCall(i * (ANIM_TIME / 4), () => {
+        this.scene.time.delayedCall(i * (ANIM_TIME / 20), () => {
           card.move(w / 2, 50)
           card.setAngle(0)
           card.setDepth(i)
@@ -64,7 +64,7 @@ export default class DeckService {
     return new Promise<void>((resolve) => {
       for (let i = 0; i < this.cards.length; i++) {
         const card = this.cards[i]
-        this.scene.time.delayedCall(i * (ANIM_TIME / 2), () => {
+        this.scene.time.delayedCall(i * (ANIM_TIME / 4), () => {
           let baseW = 250 + round * 25
           let baseH = 175 + round * 25
           card.move(rnd(baseW, w - baseW), rnd(baseH, h - baseH))
