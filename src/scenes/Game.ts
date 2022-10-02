@@ -159,7 +159,7 @@ export default class Game extends Phaser.Scene {
 
     const [a, b] = this.ai.getBestSwap(this.deck)
     if (a && b) {
-      b.setTint(0x0000ff)
+      b.setTint(0xaaaaff)
       this.sound.play('cpu-look')
 
       await new Promise((resolve) => this.delay(d / startWait, resolve))
@@ -247,7 +247,7 @@ export default class Game extends Phaser.Scene {
       this.selectedCard = undefined
     } else {
       this.selectedCard = card
-      card.setTint(0x00ffff)
+      card.setTint(0xaaffff)
     }
   }
 
