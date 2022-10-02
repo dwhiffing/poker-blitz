@@ -20,6 +20,8 @@ export default class Game extends Phaser.Scene {
   allowInput: boolean
   height: number
   roundTimer: number
+  numRounds: number
+  difficulty: string
   roundCount!: number
   timerText!: Phaser.GameObjects.BitmapText
   newGameText!: Phaser.GameObjects.BitmapText
@@ -31,6 +33,13 @@ export default class Game extends Phaser.Scene {
     this.allowInput = false
     this.height = 0
     this.roundTimer = 0
+    this.numRounds = 0
+    this.difficulty = ''
+  }
+
+  init(opts: any) {
+    this.numRounds = opts.numRounds
+    this.difficulty = opts.difficulty
   }
 
   create() {
@@ -42,8 +51,10 @@ export default class Game extends Phaser.Scene {
       card.on('pointerdown', () => this.clickCard(card)),
     )
 
-    this.player = new PlayerService(this, 50, 50, 'player')
-    this.ai = new PlayerService(this, this.width - 120, 50, 'bob')
+    this.player = new PlayerService(this, 50, 50, 'Player')
+    const w = this.width - 120
+    const name = `${this.difficulty} CPU`
+    this.ai = new PlayerService(this, w, 50, name, this.difficulty)
 
     this.timerText = this.add
       .bitmapText(this.width / 2, 50, 'gem', '')

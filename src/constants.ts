@@ -2,7 +2,7 @@ export const SUITS = ['c', 'h', 's', 'd']
 export const ANIM_TIME = 150
 export const ROUND_DURATION = 10
 export const ROUND_DELAY = 1000
-export const AI_CONFIG = {
+export const AI_CONFIG: Record<string, AIConfig> = {
   EASY: {
     startWait: 3,
     endWait: 1,

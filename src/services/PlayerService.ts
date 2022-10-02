@@ -19,14 +19,20 @@ export default class PlayerService {
   x: number
   y: number
 
-  constructor(scene: Phaser.Scene, x: number, y: number, name: string) {
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    name: string,
+    difficulty?: string,
+  ) {
     this.scene = scene
     this.cards = []
     const winCount =
       this.scene.registry.get(name === 'player' ? 'player-wins' : 'ai-wins') ||
       0
     const labelText = `${name} (${winCount} wins)`
-    this.config = AI_CONFIG.EASY
+    this.config = AI_CONFIG[(difficulty || 'EASY') as string]
     this.label = this.scene.add
       .bitmapText(x + 40, y - 35, 'gem', labelText, 16)
       .setOrigin(0.5)
