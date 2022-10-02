@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { ROUND_DURATION } from '../constants'
+import { ROUND_DELAY, ROUND_DURATION } from '../constants'
 import DeckService from '../services/DeckService'
 import PlayerService from '../services/PlayerService'
 import Card from '../sprites/Card'
@@ -79,10 +79,10 @@ export default class Game extends Phaser.Scene {
       this.roundTimer = ROUND_DURATION
       this.timerText.text = this.roundTimer.toString()
       this.allowInput = true
-      this.tickRoundTimer(resolve)
+      if (this.roundTimer === 0) this.tickRoundTimer(resolve)
       this.time.addEvent({
         repeat: ROUND_DURATION,
-        delay: 1000,
+        delay: ROUND_DELAY,
         callback: () => this.tickRoundTimer(resolve),
       })
     })
