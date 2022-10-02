@@ -28,13 +28,9 @@ export default class PlayerService {
   ) {
     this.scene = scene
     this.cards = []
-    const winCount =
-      this.scene.registry.get(name === 'player' ? 'player-wins' : 'ai-wins') ||
-      0
-    const labelText = `${name} (${winCount} wins)`
     this.config = AI_CONFIG[(difficulty || 'EASY') as string]
     this.label = this.scene.add
-      .bitmapText(x + 40, y - 35, 'gem', labelText, 16)
+      .bitmapText(x + 40, y - 35, 'gem', '', 16)
       .setOrigin(0.5)
     const isRight = x > this.scene.cameras.main.width / 2
     this.handLabels = new Array(5).fill('').map((_, i) => {
@@ -46,6 +42,15 @@ export default class PlayerService {
     this.x = x
     this.name = name
     this.y = y
+    this.updateWinCount()
+  }
+
+  updateWinCount() {
+    const winCount =
+      this.scene.registry.get(
+        this.name === 'Player' ? 'player-wins' : 'ai-wins',
+      ) || 0
+    this.label.text = `${this.name} (${winCount} wins)`
   }
 
   addCards(cards: Card[]) {

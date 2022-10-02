@@ -62,6 +62,7 @@ export default class Game extends Phaser.Scene {
     this.winnerText = this.add
       .bitmapText(this.width / 2, 50, 'gem', '')
       .setOrigin(0.5)
+      .setCenterAlign()
     this.newGameText = this.add
       .bitmapText(this.width / 2, this.height - 50, 'gem', '')
       .setOrigin(0.5)
@@ -156,15 +157,27 @@ export default class Game extends Phaser.Scene {
     })
 
     const playerWinCount = results.reduce((sum, n) => sum + (n ? 1 : 0), 0)
-    const winner = playerWinCount > 2 ? 'player' : 'bob'
+    const winner = playerWinCount > 2 ? 'player' : 'ai'
+    this.registry.inc(`${winner}-wins`)
+    const gameWinner =
+      this.registry.get('player-wins') > this.numRounds / 2 ? 'player' : 'ai'
+    let roundsRemaining = this.registry.get('num-rounds')
+    this.registry.set('num-rounds', roundsRemaining - 1)
 
-    // update labels and show replay button
-    this.winnerText.text = `${winner} wins!`
-    this.newGameText.text = 'New game?'
-    this.registry.inc(playerWinCount > 2 ? 'player-wins' : 'ai-wins')
-    this.newGameText
-      .setInteractive()
-      .on('pointerdown', () => this.scene.restart())
+    const isEndOfGame =
+      roundsRemaining - 1 === 0 ||
+      this.registry.get('player-wins') > this.numRounds / 2 ||
+      this.registry.get('ai-wins') > this.numRounds / 2
+    this.winnerText.text = isEndOfGame
+      ? `${winner}'s hand!\n${gameWinner} wins!`
+      : `${winner}'s hand!`
+    this.newGameText.text = isEndOfGame ? 'Back to Menu' : 'Next game'
+    this.player.updateWinCount()
+    this.ai.updateWinCount()
+    this.newGameText.setInteractive().on('pointerdown', () => {
+      if (isEndOfGame) this.scene.start('MenuScene')
+      else this.scene.restart()
+    })
   }
 
   clickCard(card: Card) {

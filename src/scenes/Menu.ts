@@ -16,6 +16,9 @@ export default class Menu extends Phaser.Scene {
     let roundCountIndex = 0
     let difficultyIndex = 0
 
+    this.registry.set('player-wins', 0)
+    this.registry.set('ai-wins', 0)
+
     // title
     this.add.bitmapText(w / 2, 100, 'gem', 'Poker Blitz', 64).setOrigin(0.5)
 
@@ -79,6 +82,7 @@ export default class Menu extends Phaser.Scene {
     }
     const onClickBottomButton = () => {
       if (isShowingPlayOptions) {
+        this.registry.set('num-rounds', ROUND_COUNTS[roundCountIndex])
         this.scene.start('GameScene', {
           numRounds: ROUND_COUNTS[roundCountIndex],
           difficulty: DIFFICULTY[difficultyIndex],
