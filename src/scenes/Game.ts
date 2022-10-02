@@ -78,7 +78,6 @@ export default class Game extends Phaser.Scene {
     return new Promise<void>((resolve) => {
       this.roundTimer = ROUND_DURATION
       this.timerText.text = this.roundTimer.toString()
-      this.allowInput = true
       if (this.roundTimer === 0) this.tickRoundTimer(resolve)
       this.time.addEvent({
         repeat: ROUND_DURATION,
@@ -89,19 +88,43 @@ export default class Game extends Phaser.Scene {
   }
 
   tickRoundTimer(callback: () => void) {
+    if (this.roundTimer < 0) return
+
+    if (this.roundTimer === ROUND_DURATION) {
+      this.allowInput = true
+      this.aiMove()
+    }
+
     if (--this.roundTimer > -1) {
       this.timerText.text = this.roundTimer.toString()
-
-      const [a, b] = this.ai.getBestSwap(this.deck)
-      if (a && b) this.swapCards(a, b, this.ai)
     } else {
       this.timerText.text = ''
+      this.allowInput = false
       if (this.selectedCard) {
         this.selectedCard.clearTint()
         this.selectedCard = undefined
-        this.allowInput = false
       }
       callback()
+    }
+  }
+
+  async aiMove() {
+    const d = ROUND_DURATION * ROUND_DELAY
+    await new Promise((resolve) => this.delay(d / 10, resolve))
+
+    if (!this.allowInput) return
+
+    const [a, b] = this.ai.getBestSwap(this.deck)
+    if (a && b) {
+      b.setTint(0xff0000)
+
+      await new Promise((resolve) => this.delay(d / 3, resolve))
+      b.clearTint()
+      if (!this.allowInput) return
+      this.swapCards(a, b, this.ai)
+
+      await new Promise((resolve) => this.delay(d / 5, resolve))
+      this.aiMove()
     }
   }
 
@@ -169,7 +192,7 @@ export default class Game extends Phaser.Scene {
     cardB.angle = angle
   }
 
-  async delay(duration: number, callback: () => void) {
+  async delay(duration: number, callback: any) {
     this.time.delayedCall(duration, callback)
   }
 }
