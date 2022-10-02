@@ -38,8 +38,8 @@ export default class Game extends Phaser.Scene {
   }
 
   init(opts: any) {
-    this.numRounds = opts.numRounds
-    this.difficulty = opts.difficulty
+    this.numRounds = opts.numRounds || 1
+    this.difficulty = opts.difficulty || 'EASY'
   }
 
   create() {
@@ -135,6 +135,8 @@ export default class Game extends Phaser.Scene {
       await new Promise((resolve) => this.delay(d / startWait, resolve))
       b.clearTint()
       if (!this.allowInput) return
+      a.toggle(true)
+      b.toggle(false)
       this.swapCards(a, b, this.ai)
 
       await new Promise((resolve) => this.delay(d / endWait, resolve))
@@ -155,6 +157,8 @@ export default class Game extends Phaser.Scene {
       this.ai.handLabels[i].setTint(isPlayerWinner ? 0xff1111 : 0x33ff33)
       return isPlayerWinner
     })
+
+    this.ai.cards.forEach((c) => c.toggle(true))
 
     const playerWinCount = results.reduce((sum, n) => sum + (n ? 1 : 0), 0)
     const winner = playerWinCount > 2 ? 'player' : 'ai'

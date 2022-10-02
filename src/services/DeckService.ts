@@ -30,9 +30,9 @@ export default class DeckService {
           const card = this.cards.shift()!
           target.addCards([card])
           this.scene.time.delayedCall(i * ANIM_TIME, () => {
+            card.toggle(target.name === 'Player')
             card.move(target.x + i * 20, target.y + 20 + index * 100)
             card.setDepth(i)
-            card.toggle(true)
           })
         }
       }
