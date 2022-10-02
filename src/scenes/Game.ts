@@ -1,3 +1,4 @@
+import { startCase } from 'lodash'
 import Phaser from 'phaser'
 import {
   FONT_NAME,
@@ -54,7 +55,7 @@ export default class Game extends Phaser.Scene {
 
     this.player = new PlayerService(this, 20, PLAYER_BUFFER, 'Player')
     const w = this.width - 20
-    const name = `${this.difficulty} CPU`
+    const name = `${startCase(this.difficulty.toLocaleLowerCase())} CPU`
     this.ai = new PlayerService(this, w, PLAYER_BUFFER, name, this.difficulty)
 
     this.timerText = this.add

@@ -30,6 +30,11 @@ export default class Menu extends Phaser.Scene {
       .setOrigin(0.5)
       .setFontFamily(FONT_NAME)
       .setFontSize(100)
+    this.add
+      .text(w / 2, 250, 'By Dan Whiffing')
+      .setOrigin(0.5)
+      .setFontFamily(FONT_NAME)
+      .setFontSize(32)
 
     // play option stuff
     const roundCountHeading = this.add
@@ -168,7 +173,7 @@ export default class Menu extends Phaser.Scene {
 
 const HELP_TEXT = [
   `Poker Blitz is a 2 player card game
-where you rush to build poker hands.`,
+where you rush to make poker hands.`,
   `Each round, players are dealt 5 cards
 and the rest are scattered face up`,
   `Players have 10 seconds to swap their
