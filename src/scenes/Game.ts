@@ -93,7 +93,7 @@ export default class Game extends Phaser.Scene {
       this.timerText.text = this.roundTimer.toString()
 
       const [a, b] = this.ai.getBestSwap(this.deck)
-      this.swapCards(a, b, this.ai)
+      if (a && b) this.swapCards(a, b, this.ai)
     } else {
       this.timerText.text = ''
       if (this.selectedCard) {

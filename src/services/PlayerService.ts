@@ -84,6 +84,12 @@ export default class PlayerService {
 
     const bestSwap = getBestHand(bestSwaps.map((c) => c[1][1]))
     const bestSwapCards = bestSwaps.find((c) => c[1][1] === bestSwap)!
+    const isTie =
+      judgeWinner([
+        handToString(worstHand),
+        handToString(bestSwapCards[1][1]),
+      ]) === -1
+    if (isTie) return []
     return [bestSwapCards[0], bestSwapCards[1][0]]
   }
 }
