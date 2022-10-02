@@ -28,3 +28,4 @@ export interface AIConfig {
 export const CARD_WIDTH = 120
 export const CARD_HEIGHT = 168
 export const PLAYER_BUFFER = 70
+export const FONT_NAME = 'Arial'

@@ -4,6 +4,7 @@ import {
   AI_CONFIG,
   CARD_HEIGHT,
   CARD_WIDTH,
+  FONT_NAME,
   PLAYER_BUFFER,
 } from '../constants'
 import Card from '../sprites/Card'
@@ -18,9 +19,9 @@ import DeckService from './DeckService'
 export default class PlayerService {
   cards: Card[]
   scene: Phaser.Scene
-  label: Phaser.GameObjects.BitmapText
+  label: Phaser.GameObjects.Text
   config: AIConfig
-  handLabels: Phaser.GameObjects.BitmapText[]
+  handLabels: Phaser.GameObjects.Text[]
   name: string
   x: number
   y: number
@@ -35,16 +36,17 @@ export default class PlayerService {
     this.scene = scene
     this.cards = []
     this.config = AI_CONFIG[(difficulty || 'EASY') as string]
-    this.label = this.scene.add.bitmapText(x, y - 10, 'gem', '', 52)
+    this.label = this.scene.add
+      .text(x, y - 10, '', { fontSize: '52px' })
+      .setFontFamily(FONT_NAME)
     const isRight = x > this.scene.cameras.main.width / 2
     this.label.setOrigin(isRight ? 1 : 0, 0.5)
-    this.handLabels = new Array(5)
-      .fill('')
-      .map((_, i) =>
-        this.scene.add
-          .bitmapText(x, 0, 'gem', '', 32)
-          .setOrigin(isRight ? 1 : 0, 0.5),
-      )
+    this.handLabels = new Array(5).fill('').map((_, i) =>
+      this.scene.add
+        .text(x, 0, '', { fontSize: '32px' })
+        .setFontFamily(FONT_NAME)
+        .setOrigin(isRight ? 1 : 0, 0.5),
+    )
     this.x = x
     this.name = name
     this.y = y

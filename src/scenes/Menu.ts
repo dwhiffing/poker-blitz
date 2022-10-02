@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import { FONT_NAME } from '../constants'
 
 const ROUND_COUNTS = [1, 3, 5]
 const DIFFICULTY = ['EASY', 'MEDIUM', 'HARD']
@@ -20,23 +21,26 @@ export default class Menu extends Phaser.Scene {
     this.registry.set('ai-wins', 0)
 
     // title
-    this.add.bitmapText(w / 2, 100, 'gem', 'Poker Blitz', 64).setOrigin(0.5)
+    this.add
+      .text(w / 2, 200, 'Poker Blitz')
+      .setOrigin(0.5)
+      .setFontFamily(FONT_NAME)
+      .setFontSize(100)
 
     // play option stuff
     const roundCountHeading = this.add
-      .bitmapText(w / 2, h / 2 - 100, 'gem', 'Num Rounds:')
+      .text(w / 2, h / 2 - 160, 'Num Rounds:')
       .setOrigin(0.5)
       .setAlpha(0)
+      .setFontFamily(FONT_NAME)
+      .setFontSize(60)
       .setInteractive()
     const roundCountButtons = new Array(3).fill('').map((_, i) =>
       this.add
-        .bitmapText(
-          w / 2 + (i - 1) * 120,
-          h / 2 - 40,
-          'gem',
-          ROUND_COUNTS[i].toString(),
-        )
+        .text(w / 2 + (i - 1) * 150, h / 2 - 60, ROUND_COUNTS[i].toString())
         .setOrigin(0.5)
+        .setFontSize(60)
+        .setFontFamily(FONT_NAME)
         .setAlpha(0)
         .setInteractive()
         .on('pointerdown', () => {
@@ -46,14 +50,18 @@ export default class Menu extends Phaser.Scene {
         }),
     )
     const difficultyHeading = this.add
-      .bitmapText(w / 2, h / 2 + 40, 'gem', 'CPU Level:')
+      .text(w / 2, h / 2 + 60, 'CPU Level:')
       .setOrigin(0.5)
       .setAlpha(0)
+      .setFontFamily(FONT_NAME)
+      .setFontSize(60)
       .setInteractive()
     const difficultyButtons = new Array(3).fill('').map((_, i) =>
       this.add
-        .bitmapText(w / 2 + (i - 1) * 120, h / 2 + 100, 'gem', DIFFICULTY[i])
+        .text(w / 2 + (i - 1) * 300, h / 2 + 160, DIFFICULTY[i])
         .setOrigin(0.5)
+        .setFontFamily(FONT_NAME)
+        .setFontSize(60)
         .setAlpha(0)
         .setInteractive()
         .on('pointerdown', () => {
@@ -100,19 +108,26 @@ export default class Menu extends Phaser.Scene {
     }
 
     const helpText = this.add
-      .bitmapText(w / 2, h / 2, 'gem', '')
+      .text(w / 2, h / 2, '')
       .setOrigin(0.5)
-      .setCenterAlign()
+      .setFontFamily(FONT_NAME)
+      .setFontSize(60)
+      .setAlign('center')
+      .setLineSpacing(10)
 
     const playButton = this.add
-      .bitmapText(w / 2, h - 160, 'gem', 'Play')
+      .text(w / 2, h - 300, 'Play')
       .setOrigin(0.5)
+      .setFontFamily(FONT_NAME)
+      .setFontSize(64)
       .setInteractive()
       .on('pointerdown', onClickTopButton)
 
     const helpButton = this.add
-      .bitmapText(w / 2, h - 100, 'gem', 'Help')
+      .text(w / 2, h - 200, 'Help')
       .setOrigin(0.5)
+      .setFontFamily(FONT_NAME)
+      .setFontSize(64)
       .setInteractive()
       .on('pointerdown', onClickBottomButton)
     // this.scene.start('GameScene')

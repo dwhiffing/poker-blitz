@@ -1,5 +1,10 @@
 import Phaser from 'phaser'
-import { PLAYER_BUFFER, ROUND_DELAY, ROUND_DURATION } from '../constants'
+import {
+  FONT_NAME,
+  PLAYER_BUFFER,
+  ROUND_DELAY,
+  ROUND_DURATION,
+} from '../constants'
 import DeckService from '../services/DeckService'
 import PlayerService from '../services/PlayerService'
 import Card from '../sprites/Card'
@@ -23,9 +28,9 @@ export default class Game extends Phaser.Scene {
   numRounds: number
   difficulty: string
   roundCount!: number
-  timerText!: Phaser.GameObjects.BitmapText
-  newGameText!: Phaser.GameObjects.BitmapText
-  winnerText!: Phaser.GameObjects.BitmapText
+  timerText!: Phaser.GameObjects.Text
+  newGameText!: Phaser.GameObjects.Text
+  winnerText!: Phaser.GameObjects.Text
 
   constructor() {
     super('GameScene')
@@ -57,14 +62,17 @@ export default class Game extends Phaser.Scene {
     this.ai = new PlayerService(this, w, PLAYER_BUFFER, name, this.difficulty)
 
     this.timerText = this.add
-      .bitmapText(this.width / 2, 50, 'gem', '', 64)
+      .text(this.width / 2, 50, '', { fontSize: '64px' })
+      .setFontFamily(FONT_NAME)
       .setOrigin(0.5, 0)
     this.winnerText = this.add
-      .bitmapText(this.width / 2, 30, 'gem', '', 64)
+      .text(this.width / 2, 30, '', { fontSize: '64px' })
+      .setFontFamily(FONT_NAME)
       .setOrigin(0.5, 0)
-      .setCenterAlign()
+      .setAlign('center')
     this.newGameText = this.add
-      .bitmapText(this.width / 2, this.height - 80, 'gem', '', 64)
+      .text(this.width / 2, this.height - 80, '', { fontSize: '64px' })
+      .setFontFamily(FONT_NAME)
       .setOrigin(0.5)
 
     this.delay(300, this.playRound.bind(this))
