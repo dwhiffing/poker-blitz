@@ -86,6 +86,10 @@ export default class Game extends Phaser.Scene {
       })
 
     this.delay(300, this.playRound.bind(this))
+
+    this.input.keyboard.on('keydown-F', () => {
+      this.scale.startFullscreen()
+    })
   }
 
   async playRound() {

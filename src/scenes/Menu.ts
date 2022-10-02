@@ -108,6 +108,7 @@ export default class Menu extends Phaser.Scene {
         this.registry.set('num-rounds', ROUND_COUNTS[roundCountIndex])
         this.sound.play('game-end')
         hasStarted = true
+        this.scale.startFullscreen()
         this.time.delayedCall(500, () => {
           this.scene.start('GameScene', {
             numRounds: ROUND_COUNTS[roundCountIndex],
