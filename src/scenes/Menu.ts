@@ -43,10 +43,11 @@ export default class Menu extends Phaser.Scene {
         .setFontFamily(FONT_NAME)
         .setAlpha(0)
         .setInteractive()
+        .setColor('#ffffff55')
         .on('pointerdown', () => {
           roundCountIndex = i
-          roundCountButtons.forEach((b) => b.clearTint())
-          roundCountButtons[i].setTint(0xff0000)
+          roundCountButtons.forEach((b) => b.setColor('#ffffff55'))
+          roundCountButtons[i].setColor('#ffffff')
         }),
     )
     const difficultyHeading = this.add
@@ -64,14 +65,15 @@ export default class Menu extends Phaser.Scene {
         .setFontSize(60)
         .setAlpha(0)
         .setInteractive()
+        .setColor('#ffffff55')
         .on('pointerdown', () => {
           difficultyIndex = i
-          difficultyButtons.forEach((b) => b.clearTint())
-          difficultyButtons[i].setTint(0xff0000)
+          difficultyButtons.forEach((b) => b.setColor('#ffffff55'))
+          difficultyButtons[i].setColor('#ffffff')
         }),
     )
-    roundCountButtons[0].setTint(0xff0000)
-    difficultyButtons[0].setTint(0xff0000)
+    roundCountButtons[0].setColor('#ffffff')
+    difficultyButtons[0].setColor('#ffffff')
     const showPlayOptions = () => {
       if (isShowingPlayOptions) return
       isShowingPlayOptions = true

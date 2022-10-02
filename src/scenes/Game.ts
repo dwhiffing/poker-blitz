@@ -163,12 +163,8 @@ export default class Game extends Phaser.Scene {
       const aiHand = aiHands[i]
       const hands = [handToString(pHand), handToString(aiHand)]
       const winnerIndex = judgeWinner(hands)
-      this.player.handLabels[i].setTint(
-        winnerIndex === -1 ? 0xffff00 : winnerIndex === 0 ? 0x33ff33 : 0xff1111,
-      )
-      this.ai.handLabels[i].setTint(
-        winnerIndex === -1 ? 0xffff00 : winnerIndex === 0 ? 0xff1111 : 0x33ff33,
-      )
+      this.player.handLabels[i].setTint(winnerIndex === 0 ? 0x00ff00 : 0xffffff)
+      this.ai.handLabels[i].setTint(winnerIndex === 1 ? 0x00ff00 : 0xffffff)
       return winnerIndex
     })
 
@@ -180,8 +176,8 @@ export default class Game extends Phaser.Scene {
       this.winnerText.text = "It's a tie!"
       this.newGameText.text = 'Replay'
     } else {
-      const winner = playerWinCount > aiWinCount ? 'player' : 'AI'
-      this.registry.inc(`${winner === 'player' ? 'player' : 'ai'}-wins`)
+      const winner = playerWinCount > aiWinCount ? 'Player' : 'CPU'
+      this.registry.inc(`${winner === 'Player' ? 'player' : 'ai'}-wins`)
       let roundsRemaining = this.registry.get('num-rounds')
       this.registry.set('num-rounds', roundsRemaining - 1)
 
@@ -189,9 +185,7 @@ export default class Game extends Phaser.Scene {
         roundsRemaining - 1 === 0 ||
         this.registry.get('player-wins') > this.numRounds / 2 ||
         this.registry.get('ai-wins') > this.numRounds / 2
-      this.winnerText.text = isEndOfGame
-        ? `${winner}'s hand!\n${winner} wins!`
-        : `${winner}'s hand!`
+      this.winnerText.text = `${winner} wins!`
 
       this.newGameText.text = isEndOfGame ? 'Back to Menu' : 'Next game'
       this.player.updateWinCount()
