@@ -81,15 +81,19 @@ export default class Game extends Phaser.Scene {
   async playRound() {
     this.roundCount = 0
     while (this.roundCount <= 4) {
-      if (this.roundCount > 0) await this.deck.shuffle()
       await this.deck.deal(5, this.player, this.roundCount)
       this.player.updateHandDescriptions()
 
+      await new Promise((resolve) => this.delay(50, resolve))
+
       await this.deck.deal(5, this.ai, this.roundCount)
+
+      await new Promise((resolve) => this.delay(50, resolve))
       await this.deck.scatter(this.roundCount)
       if (this.roundCount < 4) {
         await this.startRoundTimer()
         await this.deck.shuffle()
+        await new Promise((resolve) => this.delay(100, resolve))
       }
       this.roundCount++
     }
@@ -98,9 +102,9 @@ export default class Game extends Phaser.Scene {
 
   startRoundTimer() {
     return new Promise<void>((resolve) => {
-      this.roundTimer = ROUND_DURATION
+      this.roundTimer = ROUND_DURATION + 1
       this.timerText.text = this.roundTimer.toString()
-      if (this.roundTimer === 0) this.tickRoundTimer(resolve)
+      this.tickRoundTimer(resolve)
       this.time.addEvent({
         repeat: ROUND_DURATION,
         delay: ROUND_DELAY,
@@ -112,12 +116,13 @@ export default class Game extends Phaser.Scene {
   tickRoundTimer(callback: () => void) {
     if (this.roundTimer < 0) return
 
-    if (this.roundTimer === ROUND_DURATION) {
+    if (this.roundTimer === ROUND_DURATION + 1) {
       this.allowInput = true
       this.aiMove()
     }
 
     if (--this.roundTimer > -1) {
+      this.sound.play('tick')
       this.timerText.text = this.roundTimer.toString()
     } else {
       this.timerText.text = ''
@@ -141,12 +146,14 @@ export default class Game extends Phaser.Scene {
     const [a, b] = this.ai.getBestSwap(this.deck)
     if (a && b) {
       b.setTint(0x00ffff)
+      this.sound.play('cpu-look')
 
       await new Promise((resolve) => this.delay(d / startWait, resolve))
       b.clearTint()
       if (!this.allowInput || !this.deck.cards.includes(b)) return
       a.toggle(true)
       b.toggle(false)
+      this.sound.play('cpu-swap')
       this.swapCards(a, b, this.ai)
 
       await new Promise((resolve) => this.delay(d / endWait, resolve))
@@ -194,6 +201,7 @@ export default class Game extends Phaser.Scene {
     this.newGameText
       .setInteractive()
       .on('pointerdown', this.onClickNextGame.bind(this))
+    this.sound.play('game-end')
   }
 
   onClickNextGame() {
@@ -218,6 +226,7 @@ export default class Game extends Phaser.Scene {
       return
 
     if (this.selectedCard) {
+      this.sound.play('player-swap')
       this.swapCards(card, this.selectedCard, this.player)
       this.player.updateHandDescriptions()
       this.selectedCard.clearTint()

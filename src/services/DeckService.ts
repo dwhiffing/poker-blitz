@@ -40,6 +40,9 @@ export default class DeckService {
               CARD_HEIGHT * 0.75 +
               index * (CARD_HEIGHT + PLAYER_BUFFER)
             card.move(x, y)
+            this.scene.time.delayedCall(ANIM_TIME * 2, () =>
+              this.scene.sound.play('deal'),
+            )
             card.setDepth(i)
           })
         }
@@ -55,6 +58,10 @@ export default class DeckService {
       for (let i = 0; i < this.cards.length; i++) {
         const card = this.cards[i]
         this.scene.time.delayedCall(i * (ANIM_TIME / 20), () => {
+          if (i % 25 === 0)
+            this.scene.time.delayedCall(Math.floor(i / 20) * 200, () =>
+              this.scene.sound.play('shuffle'),
+            )
           card.move(w / 2, PLAYER_BUFFER + CARD_HEIGHT / 2)
           card.setAngle(0)
           card.setDepth(i)
@@ -75,6 +82,7 @@ export default class DeckService {
         this.scene.time.delayedCall(i * (ANIM_TIME / 4), () => {
           let baseW = 400 + round * 50
           let baseH = 400 + round * 50
+          if (i % 3 === 0) this.scene.sound.play('player-swap')
           card.move(rnd(baseW, w - baseW), rnd(baseH, h - baseH))
           card.setAngle(rnd(1, 350))
           card.setDepth(i)

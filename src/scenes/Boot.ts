@@ -15,6 +15,14 @@ export default class Boot extends Phaser.Scene {
       progress.fillRect(0, +height / 2, +width * value, 60)
     })
 
+    this.load.audio('deal', 'assets/deal.mp3')
+    this.load.audio('cpu-swap', 'assets/cpu-swap.mp3')
+    this.load.audio('cpu-look', 'assets/cpu-look.mp3')
+    this.load.audio('game-end', 'assets/game-end.mp3')
+    this.load.audio('player-swap', 'assets/player-swap.mp3')
+    this.load.audio('shuffle', 'assets/shuffle.mp3')
+    this.load.audio('tick', 'assets/tick.mp3')
+    this.load.audio('scatter', 'assets/scatter.mp3')
     this.load.image('logo', 'assets/phaser3-logo.png')
     this.load.spritesheet('cards', 'assets/cards.png', {
       frameHeight: 336,
