@@ -80,8 +80,8 @@ export default class DeckService {
       for (let i = 0; i < this.cards.length; i++) {
         const card = this.cards[i]
         this.scene.time.delayedCall(i * (ANIM_TIME / 4), () => {
-          let baseW = 400 + round * 50
-          let baseH = 400 + round * 50
+          let baseW = 350 + round * 50
+          let baseH = 350 + round * 50
           if (i % 3 === 0) this.scene.sound.play('player-swap')
           card.move(rnd(baseW, w - baseW), rnd(baseH, h - baseH))
           card.setAngle(rnd(1, 350))

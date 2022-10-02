@@ -115,7 +115,7 @@ export default class Game extends Phaser.Scene {
 
   startRoundTimer() {
     return new Promise<void>((resolve) => {
-      this.roundTimer = ROUND_DURATION + 1
+      this.roundTimer = ROUND_DURATION > 0 ? ROUND_DURATION + 1 : ROUND_DURATION
       this.timerText.text = this.roundTimer.toString()
       this.tickRoundTimer(resolve)
       this.time.addEvent({
@@ -129,7 +129,8 @@ export default class Game extends Phaser.Scene {
   tickRoundTimer(callback: () => void) {
     if (this.roundTimer < 0) return
 
-    if (this.roundTimer === ROUND_DURATION + 1) {
+    // @ts-ignore
+    if (this.roundTimer === ROUND_DURATION + 1 && ROUND_DURATION !== 0) {
       this.allowInput = true
       this.aiMove()
     }
