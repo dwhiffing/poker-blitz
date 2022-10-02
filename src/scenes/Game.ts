@@ -172,12 +172,14 @@ export default class Game extends Phaser.Scene {
 
       await new Promise((resolve) => this.delay(d / startWait, resolve))
       b.clearTint()
-      if (!this.allowInput || !this.deck.cards.includes(b)) return
-      a.toggle(true)
-      b.toggle(false)
-      this.sound.play('cpu-swap')
-      this.swapCards(a, b, this.ai)
+      if (this.deck.cards.includes(b)) {
+        a.toggle(true)
+        b.toggle(false)
+        this.sound.play('cpu-swap')
+        this.swapCards(a, b, this.ai)
+      }
 
+      if (!this.allowInput) return
       if (this.roundTimer <= 0) return
 
       await new Promise((resolve) => this.delay(d / endWait, resolve))
