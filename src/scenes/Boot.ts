@@ -23,7 +23,6 @@ export default class Boot extends Phaser.Scene {
     this.load.audio('shuffle', 'assets/shuffle.mp3')
     this.load.audio('tick', 'assets/tick.mp3')
     this.load.audio('scatter', 'assets/scatter.mp3')
-    this.load.image('logo', 'assets/phaser3-logo.png')
     this.load.spritesheet('icons', 'assets/icons.png', {
       frameHeight: 50,
       frameWidth: 49,
@@ -39,16 +38,5 @@ export default class Boot extends Phaser.Scene {
     })
   }
 
-  create() {
-    const logo = this.add.image(400, 70, 'logo')
-
-    this.tweens.add({
-      targets: logo,
-      y: 350,
-      duration: 1500,
-      ease: 'Sine.inOut',
-      yoyo: true,
-      repeat: -1,
-    })
-  }
+  create() {}
 }
