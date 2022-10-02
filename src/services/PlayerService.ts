@@ -1,4 +1,5 @@
 import { chunk, takeRight } from 'lodash'
+import { AIConfig, AI_CONFIG } from '../constants'
 import Card from '../sprites/Card'
 import {
   getHandDescriptions,
@@ -12,6 +13,7 @@ export default class PlayerService {
   cards: Card[]
   scene: Phaser.Scene
   label: Phaser.GameObjects.BitmapText
+  config: AIConfig
   handLabels: Phaser.GameObjects.BitmapText[]
   name: string
   x: number
@@ -24,6 +26,7 @@ export default class PlayerService {
       this.scene.registry.get(name === 'player' ? 'player-wins' : 'ai-wins') ||
       0
     const labelText = `${name} (${winCount} wins)`
+    this.config = AI_CONFIG.EASY
     this.label = this.scene.add
       .bitmapText(x + 40, y - 35, 'gem', labelText, 16)
       .setOrigin(0.5)
@@ -74,10 +77,9 @@ export default class PlayerService {
     const hands = this.getHandsSorted()
     const worstHand = hands[hands.length - 1]
     const bestSwaps = worstHand.map((aiCard, i, aiHand) => {
-      const allSwaps = takeRight(deck.cards, 12).map((card) => [
-        card,
-        aiHand.map((c) => (c === aiCard ? card : c)),
-      ])
+      const allSwaps = takeRight(deck.cards, this.config.cardSlice).map(
+        (card) => [card, aiHand.map((c) => (c === aiCard ? card : c))],
+      )
       const bestSwap = getBestHand(allSwaps.map((c) => c[1]) as Card[][])
       return [aiCard, allSwaps.find((_c) => _c[1] === bestSwap)]
     }) as [Card, [Card, Card[]]][]

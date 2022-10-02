@@ -110,7 +110,9 @@ export default class Game extends Phaser.Scene {
 
   async aiMove() {
     const d = ROUND_DURATION * ROUND_DELAY
-    await new Promise((resolve) => this.delay(d / 10, resolve))
+    const startWait = this.ai.config.startWait
+    const endWait = this.ai.config.endWait
+    await new Promise((resolve) => this.delay(d / 100, resolve))
 
     if (!this.allowInput) return
 
@@ -118,12 +120,12 @@ export default class Game extends Phaser.Scene {
     if (a && b) {
       b.setTint(0xff0000)
 
-      await new Promise((resolve) => this.delay(d / 3, resolve))
+      await new Promise((resolve) => this.delay(d / startWait, resolve))
       b.clearTint()
       if (!this.allowInput) return
       this.swapCards(a, b, this.ai)
 
-      await new Promise((resolve) => this.delay(d / 5, resolve))
+      await new Promise((resolve) => this.delay(d / endWait, resolve))
       this.aiMove()
     }
   }
