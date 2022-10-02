@@ -74,7 +74,7 @@ export default class DeckService {
         const card = this.cards[i]
         this.scene.time.delayedCall(i * (ANIM_TIME / 4), () => {
           let baseW = 400 + round * 50
-          let baseH = 250 + round * 50
+          let baseH = 400 + round * 50
           card.move(rnd(baseW, w - baseW), rnd(baseH, h - baseH))
           card.setAngle(rnd(1, 350))
           card.setDepth(i)

@@ -140,7 +140,7 @@ export default class Game extends Phaser.Scene {
 
     const [a, b] = this.ai.getBestSwap(this.deck)
     if (a && b) {
-      b.setTint(0xff0000)
+      b.setTint(0x00ffff)
 
       await new Promise((resolve) => this.delay(d / startWait, resolve))
       b.clearTint()
