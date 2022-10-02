@@ -174,6 +174,8 @@ and the rest are scattered face up`,
   `Players have 10 seconds to swap their
 cards with the ones on the table.
 You can swap from any of your hands.`,
+  `Click any one of your cards, then a
+card in the center to swap.`,
   `You will play against the computer.
 The card they will swap with is highlighted
 for a moment before they swap.`,
